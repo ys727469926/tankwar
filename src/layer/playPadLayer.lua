@@ -48,19 +48,19 @@ local initOnTouchEvent = function(target)
         if cc.rectContainsPoint(rectUp, locationInTouch) then
             cclog("up")
             target:getChildByTag(1):setOpacity(180)
-            target.groundLayer:heroMove("up")
+            target.groundLayer:tankMove("up")
         elseif cc.rectContainsPoint(rectRight, locationInTouch) then
             cclog("right")
             target:getChildByTag(2):setOpacity(180)
-            target.groundLayer:heroMove("right")
+            target.groundLayer:tankMove("right")
         elseif cc.rectContainsPoint(rectDown, locationInTouch) then
             cclog("down")
             target:getChildByTag(3):setOpacity(180)
-            target.groundLayer:heroMove("down")
+            target.groundLayer:tankMove("down")
         elseif cc.rectContainsPoint(rectLeft, locationInTouch) then
             cclog("left")
             target:getChildByTag(4):setOpacity(180)
-            target.groundLayer:heroMove("left")
+            target.groundLayer:tankMove("left")
         end
         return true
     end
@@ -90,22 +90,28 @@ local initOnTouchEvent = function(target)
         if cc.rectContainsPoint(rectUp, locationInTouch) then
             cclog("move in up")
             setOpacityBatchly(1)
+            target.groundLayer:tankMove("up")
         elseif cc.rectContainsPoint(rectRight, locationInTouch) then
             cclog("move in right")
             setOpacityBatchly(2)
+            target.groundLayer:tankMove("right")
         elseif cc.rectContainsPoint(rectDown, locationInTouch) then
             cclog("move in down")
             setOpacityBatchly(3)
+            target.groundLayer:tankMove("down")
         elseif cc.rectContainsPoint(rectLeft, locationInTouch) then
             cclog("move in left")
             setOpacityBatchly(4)
+            target.groundLayer:tankMove("left")
         else
+            target.groundLayer:tankStopMove()
             resetOpacity()
         end
     end
 
     local function onTouchEnded()
         --统一设置所有按钮透明度恢复，后期可由groundLayer获取移动标志以处理透明度
+        target.groundLayer:tankStopMove()
         resetOpacity()
     end
 

@@ -32,8 +32,12 @@ end
 function playGroundLayer:ctor()
 end
 
-function playGroundLayer:heroMove(tag)
+function playGroundLayer:tankMove(tag)
     self:getChildByTag(1):tankMove(tag)
+end
+
+function playGroundLayer:tankStopMove()
+    self:getChildByTag(1):tankStopMove()
 end
 
 return playGroundLayer

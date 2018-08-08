@@ -20,6 +20,7 @@ function Tank:ctor(tankName)
     self.right = 0
     self.down = 0
     self.left = 0
+    self.isMoving = false
 
     local spriteFrame = cc.SpriteFrameCache:getInstance()
     spriteFrame:addSpriteFrames("tank.plist")
@@ -67,14 +68,36 @@ function Tank:setCurrentDirection(direction)
 end
 
 
+
+
 --坦克移动函数
 function Tank:tankMove(tag)
     cclog("tank Move")
+    local tankX, tankY = self:getPosition()
+
+    local tankMoveToCurrentDirection = function(direction)
+        local moveTo
+        if direction == "up" then
+            moveTo = cc.MoveTo:create(0.01 * (610 - tankY), cc.p(tankX, 610))
+        elseif direction == "right" then
+            moveTo = cc.MoveTo:create(0.01 * (770 - tankX), cc.p(770, tankY))
+        elseif direction == "down" then
+            moveTo = cc.MoveTo:create(0.01 * (tankY - 30), cc.p(tankX, 30))
+        elseif direction == "left" then
+            moveTo = cc.MoveTo:create(0.01 * (tankX - 190), cc.p(190, tankY))
+        end
+        self:runAction(moveTo)
+        self.isMoving = true
+    end
 
     local direction = self:getCurrentDirection()
-    if tag == "up" then
-        if not (direction == "up") then
-            local rotate
+    if tag == direction then
+        if not self.isMoving then
+            tankMoveToCurrentDirection(tag)
+        end
+    else
+        local rotate
+        if tag == "up" then
             if direction == "left" then
                 rotate = cc.RotateBy:create(0, 90)
             elseif direction == "down" then
@@ -84,11 +107,8 @@ function Tank:tankMove(tag)
             end
             self:runAction(rotate)
             self:setCurrentDirection("up")
-        end
 
-    elseif tag == "right" then
-        if not (direction == "right") then
-            local rotate
+        elseif tag == "right" then
             if direction == "up" then
                 rotate = cc.RotateBy:create(0, 90)
             elseif direction == "left" then
@@ -98,11 +118,8 @@ function Tank:tankMove(tag)
             end
             self:runAction(rotate)
             self:setCurrentDirection("right")
-        end
 
-    elseif tag == "down" then
-        if not (direction == "down") then
-            local rotate
+        elseif tag == "down" then
             if direction == "right" then
                 rotate = cc.RotateBy:create(0, 90)
             elseif direction == "up" then
@@ -112,10 +129,7 @@ function Tank:tankMove(tag)
             end
             self:runAction(rotate)
             self:setCurrentDirection("down")
-        end
-    elseif tag == "left" then
-        if not (direction == "left") then
-            local rotate
+        elseif tag == "left" then
             if direction == "down" then
                 rotate = cc.RotateBy:create(0, 90)
             elseif direction == "right" then
@@ -126,7 +140,17 @@ function Tank:tankMove(tag)
             self:runAction(rotate)
             self:setCurrentDirection("left")
         end
+
+        tankMoveToCurrentDirection(tag)
     end
+
+
+end
+
+--坦克停止函数
+function Tank:tankStopMove()
+    self:stopAllActions()
+    self.isMoving = false
 end
 
 return Tank
