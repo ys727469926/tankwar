@@ -4,8 +4,6 @@
 --- DateTime: 2018/8/8 11:42
 ---
 
-local size = cc.Director:getInstance():getWinSize()
-
 local playPadLayer = class("playGroundLayer", function()
     return cc.Layer:create()
 end)
@@ -50,15 +48,19 @@ local initOnTouchEvent = function(target)
         if cc.rectContainsPoint(rectUp, locationInTouch) then
             cclog("up")
             target:getChildByTag(1):setOpacity(180)
+            target.groundLayer:heroMove("up")
         elseif cc.rectContainsPoint(rectRight, locationInTouch) then
             cclog("right")
             target:getChildByTag(2):setOpacity(180)
+            target.groundLayer:heroMove("right")
         elseif cc.rectContainsPoint(rectDown, locationInTouch) then
             cclog("down")
             target:getChildByTag(3):setOpacity(180)
+            target.groundLayer:heroMove("down")
         elseif cc.rectContainsPoint(rectLeft, locationInTouch) then
             cclog("left")
             target:getChildByTag(4):setOpacity(180)
+            target.groundLayer:heroMove("left")
         end
         return true
     end

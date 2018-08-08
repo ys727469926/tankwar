@@ -62,9 +62,5 @@ local function tankStopRun(sprite)
     sprite:stopAllActions()
 end
 
-function playScene:createLayer()
-
-
-end
 
 return playScene

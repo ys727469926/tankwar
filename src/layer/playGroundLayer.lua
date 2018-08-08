@@ -10,19 +10,130 @@ local playGroundLayer = class("playGroundLayer", function()
     return cc.Layer:create()
 end)
 
+local initSprite = function(target)
+    cclog("spriteTank init")
+
+    local spriteFrame = cc.SpriteFrameCache:getInstance()
+    spriteFrame:addSpriteFrames("tank.plist")
+
+    local tank = cc.Sprite:createWithSpriteFrameName("tank_stay_1.png")
+    tank:setPosition(cc.p(size.width / 2, size.height / 2))
+    target:addChild(tank, 0, 1)
+end
+
 function playGroundLayer:create()
     cclog("play groud layer init")
     local layer = playGroundLayer.new()
 
-    cclog("spriteTank init")
-
-    tank = cc.Sprite:create("tank.png", cc.rect(61, 608, 61, 61))
-    tank:setAnchorPoint(cc.p(0, 0))
-    tank:setPosition(cc.p(size.width / 2, size.height / 2))
-    layer:addChild(tank, 0)
-
+    initSprite(layer)
 
     return layer
+end
+
+function playGroundLayer:ctor()
+    self.up = 1
+    self.right = 0
+    self.down = 0
+    self.left = 0
+end
+
+function playGroundLayer:getCurrentDirection()
+    if self.up == 1 then
+        return "up"
+    elseif self.right == 1 then
+        return "right"
+    elseif self.down == 1 then
+        return "down"
+    elseif self.left == 1 then
+        return "left"
+    end
+end
+
+function playGroundLayer:setCurrentDirection(direction)
+    local currentDirection = self:getCurrentDirection()
+
+    if direction == "up" then
+        self.up = 1
+    elseif direction == "right" then
+        self.right = 1
+    elseif direction == "down" then
+        self.down = 1
+    elseif direction == "left" then
+        self.left = 1
+    end
+
+    if currentDirection == "up" then
+        self.up = 0
+    elseif currentDirection == "right" then
+        self.right = 0
+    elseif currentDirection == "down" then
+        self.down = 0
+    elseif currentDirection == "left" then
+        self.left = 0
+    end
+
+
+end
+
+function playGroundLayer:heroMove(tag)
+    cclog("Hero Move")
+
+    local direction = self:getCurrentDirection()
+    if tag == "up" then
+        if not (direction == "up") then
+            local rotate
+            if direction == "left" then
+                rotate = cc.RotateBy:create(0, 90)
+            elseif direction == "down" then
+                rotate = cc.RotateBy:create(0, 180)
+            elseif direction == "right" then
+                rotate = cc.RotateBy:create(0, 270)
+            end
+            self:getChildByTag(1):runAction(rotate)
+            self:setCurrentDirection("up")
+        end
+
+    elseif tag == "right" then
+        if not (direction == "right") then
+            local rotate
+            if direction == "up" then
+                rotate = cc.RotateBy:create(0, 90)
+            elseif direction == "left" then
+                rotate = cc.RotateBy:create(0, 180)
+            elseif direction == "down" then
+                rotate = cc.RotateBy:create(0, 270)
+            end
+            self:getChildByTag(1):runAction(rotate)
+            self:setCurrentDirection("right")
+        end
+
+    elseif tag == "down" then
+        if not (direction == "down") then
+            local rotate
+            if direction == "right" then
+                rotate = cc.RotateBy:create(0, 90)
+            elseif direction == "up" then
+                rotate = cc.RotateBy:create(0, 180)
+            elseif direction == "left" then
+                rotate = cc.RotateBy:create(0, 270)
+            end
+            self:getChildByTag(1):runAction(rotate)
+            self:setCurrentDirection("down")
+        end
+    elseif tag == "left" then
+        if not (direction == "left") then
+            local rotate
+            if direction == "down" then
+                rotate = cc.RotateBy:create(0, 90)
+            elseif direction == "right" then
+                rotate = cc.RotateBy:create(0, 180)
+            elseif direction == "up" then
+                rotate = cc.RotateBy:create(0, 270)
+            end
+            self:getChildByTag(1):runAction(rotate)
+            self:setCurrentDirection("left")
+        end
+    end
 end
 
 return playGroundLayer
