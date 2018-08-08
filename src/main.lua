@@ -42,7 +42,7 @@ local function main()
 
     --local scene=require("scene.menu_scene")
     --为调试，直接进入playscene
-    local scene = require("scene.menuScene")
+    local scene = require("scene.playScene")
     local menuScene = scene:create()
 
     if cc.Director:getInstance():getRunningScene() then

@@ -16,17 +16,21 @@ function playScene:create()
     local scene = playScene:new()
 
     local playGroundLayer = require("layer.playGroundLayer")
-    local grouncLayer = playGroundLayer:create()
-    scene:addChild(grouncLayer)
+    local groundLayer = playGroundLayer:create()
+    scene:addChild(groundLayer, 0, 1)
 
     local playPadLayer = require("layer.playPadLayer")
     local padLayer = playPadLayer:create()
-    scene:addChild(padLayer)
+    scene:addChild(padLayer, 1, 2)
+
+    --绑定游戏层为操作层的成员
+    padLayer.groundLayer = groundLayer
 
     return scene
 end
 
 function playScene:ctor()
+
 end
 
 

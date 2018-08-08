@@ -12,7 +12,7 @@ end)
 
 function playGroundLayer:create()
     cclog("play groud layer init")
-    local layer = cc.Layer:create()
+    local layer = playGroundLayer.new()
 
     cclog("spriteTank init")
 
@@ -20,6 +20,7 @@ function playGroundLayer:create()
     tank:setAnchorPoint(cc.p(0, 0))
     tank:setPosition(cc.p(size.width / 2, size.height / 2))
     layer:addChild(tank, 0)
+
 
     return layer
 end
