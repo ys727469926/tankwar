@@ -4,6 +4,7 @@
 --- DateTime: 2018/8/6 12:47
 ---
 
+local MissionLayer = require("layer.MissionLayer")
 
 local MissionScene = class("MissionScene", function()
     return cc.Scene:create()
@@ -11,8 +12,7 @@ end)
 
 function MissionScene:ctor()
     cclog("missionScene init")
-    local layer = require("layer.MissionLayer")
-    local missionLayer = layer:create()
+    local missionLayer = MissionLayer:create()
     self:addChild(missionLayer)
 end
 

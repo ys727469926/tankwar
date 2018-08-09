@@ -1,15 +1,8 @@
 cc.FileUtils:getInstance():setPopupNotify(false)
 
--- 0 - disable debug info, 1 - less debug info, 2 - verbose debug info
-DEBUG = 2
-
--- use framework, will disable all deprecated API, false - use legacy API
-CC_USE_FRAMEWORK = true
-
--- show FPS on screen
-CC_SHOW_FPS = true
-
+require "config"
 require "cocos.init"
+local PlayScene = require("scene.PlayScene")
 
 --输出日志到控制台
 cclog = function(...)
@@ -41,7 +34,7 @@ local function main()
     collectgarbage("setstepmul", 5000)
 
     local director = cc.Director:getInstance()
-    director:getOpenGLView():setDesignResolutionSize(960, 640, 0)
+    --director:getOpenGLView():setDesignResolutionSize(960, 640, 0)
 
     director:setDisplayStats(true)
 
@@ -51,8 +44,7 @@ local function main()
 
     --local scene = require("scene.MenuScene")
     --为调试，直接进入playscene
-    local scene = require("scene.PlayScene")
-    local menuScene = scene:create()
+    local menuScene = PlayScene:create()
 
     if cc.Director:getInstance():getRunningScene() then
         cc.Director:getInstance():replaceScene(menuScene)

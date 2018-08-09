@@ -4,6 +4,7 @@
 --- DateTime: 2018/8/8 11:41
 ---
 
+local Tank = require("sprite.Tank")
 local size = cc.Director:getInstance():getWinSize()
 
 local playGroundLayer = class("playGroundLayer", function()
@@ -13,9 +14,11 @@ end)
 function playGroundLayer:ctor()
     cclog("play ground layer init sprite")
 
-    local Tank = require("sprite.Tank")
 
     local tank = Tank:create("tank_stay_1.png")
+    cclog(size.width)
+    cclog(size.width / 2)
+    cclog(size.height)
     tank:setPosition(cc.p(size.width / 2, size.height / 2))
     self:addChild(tank, 0, 1)
 end

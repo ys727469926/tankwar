@@ -4,6 +4,9 @@
 --- DateTime: 2018/8/9 16:21
 ---
 
+local common = require("common")
+local size = cc.Director:getInstance():getWinSize()
+
 local Bullet = class("Bullet", function(direction, positionX, positionY, isHero)
     return cc.Sprite:create()
 end)
@@ -17,7 +20,30 @@ function Bullet:ctor(direction, positionX, positionY, isHero)
     local spriteFrame = cc.SpriteFrameCache:getInstance()
     spriteFrame:addSpriteFrames("tank.plist")
     self:setSpriteFrame("tank_bullet.png")
-    self:setPosition(cc.p(positionX, positionY))
+    for i = 1, 4 do
+        if direction == i then
+            self:setRotation(90 * (i - 1))
+            local position = common.polarToRightAngle(positionX, positionY, 25, i)
+            self.positionX = position.x
+            self.positionY = position.y
+            self:setPosition(position)
+            break
+        end
+    end
+end
+
+function Bullet:fly()
+
+    local time, destination = common.initMoveTo(self.direction, 0.0025, self.positionX, self.positionY, size.width - 248, 248, size.height, 0)
+    local action = cc.MoveTo:create(time, destination)
+
+    local flyOutOfScene = function()
+        self:removeFromParent()
+    end
+
+    local sequence = cc.Sequence:create(action, cc.CallFunc:create(flyOutOfScene))
+
+    self:runAction(sequence)
 end
 
 return Bullet

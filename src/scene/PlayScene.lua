@@ -5,19 +5,19 @@
 ---
 
 
+local PlayGroundLayer = require("layer.PlayGroundLayer")
+local PlayPadLayer = require("layer.PlayPadLayer")
+
 local PlayScene = class("PlayScene", function()
     return cc.Scene:create()
 end)
 
 function PlayScene:ctor()
     cclog("playScene init")
-
-    local playGroundLayer = require("layer.PlayGroundLayer")
-    local groundLayer = playGroundLayer:create()
+    local groundLayer = PlayGroundLayer:create()
     self:addChild(groundLayer, 0, 1)
 
-    local playPadLayer = require("layer.PlayPadLayer")
-    local padLayer = playPadLayer:create()
+    local padLayer = PlayPadLayer:create()
     self:addChild(padLayer, 1, 2)
 
     --绑定游戏层为操作层的成员

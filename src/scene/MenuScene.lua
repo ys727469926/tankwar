@@ -4,6 +4,7 @@
 --- DateTime: 2018/8/6 17:13
 ---
 
+local MenuLayer = require("layer.MenuLayer")
 
 local MenuScene = class("MenuScene", function()
     return cc.Scene:create()
@@ -11,8 +12,7 @@ end)
 
 function MenuScene:ctor()
     cclog("menuScene init")
-    local layer = require("layer.MenuLayer")
-    local menuLayer = layer:create()
+    local menuLayer = MenuLayer:create()
     self:addChild(menuLayer)
 end
 

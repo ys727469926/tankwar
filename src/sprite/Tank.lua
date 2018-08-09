@@ -5,6 +5,11 @@
 ---
 
 
+local common = require("common")
+local Bullet = require("sprite.Bullet")
+local size = cc.Director:getInstance():getWinSize()
+
+
 local Tank = class("Tank", function(tankName)
     return cc.Sprite:create()
 end)
@@ -64,27 +69,12 @@ function Tank:tankMove(tag)
     local tankX, tankY = self:getPosition()
 
     local tankMoveToCurrentDirection = function(direction)
-        local time
-        local destination
-        if direction == 1 then
-            time = 0.01 * (610 - tankY)
-            destination = cc.p(tankX, 610)
-        elseif direction == 2 then
-            time = 0.01 * (770 - tankX)
-            destination = cc.p(770, tankY)
-        elseif direction == 3 then
-            time = 0.01 * (tankY - 30)
-            destination = cc.p(tankX, 30)
-        elseif direction == 4 then
-            time = 0.01 * (tankX - 190)
-            destination = cc.p(190, tankY)
-        end
+        local time, destination = common.initMoveTo(direction, 0.005, tankX, tankY, size.width - 248 - 30, 248 + 30, 610, 30)
         self.currentMoveAction = cc.MoveTo:create(time, destination)
 
         --self:startMoveAction
 
         self:runAction(cc.RepeatForever:create(self.moveAnimation:clone()))
-        --cclog("test")
         self:runAction(self.currentMoveAction)
         self.isMoving = true
     end
@@ -128,19 +118,15 @@ end
 
 --坦克开火
 function Tank:tankFire()
-
     if self.fireCalmDown == false then
-        --cclog("tank fire!")
 
         local tankX, tankY = self:getPosition()
-        local Bullet = require("sprite.Bullet")
-
         local bullet = Bullet:create(self.direction, tankX, tankY, true)
         self:getParent():addChild(bullet, 1, 2)
+        bullet:fly()
         self.fireCalmDown = true
         return true
     else
-        --cclog("fire calming!")
         return false
     end
     return false

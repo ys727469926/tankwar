@@ -3,7 +3,9 @@
 --- Created by yangsen.
 --- DateTime: 2018/8/8 11:42
 ---
+local common = require("common")
 
+local size = cc.Director:getInstance():getWinSize()
 
 local PlayPadLayer = class("PlayPadLayer", function()
     return cc.Layer:create()
@@ -17,13 +19,12 @@ function PlayPadLayer:initButton()
     --1234 上右下左
     for i = 1, 4 do
         local button = cc.Sprite:createWithSpriteFrameName(string.format("arrow_%d_64.png", i))
-        button:setPosition(cc.p(150 + 100 * math.sin(math.rad(90 * (i - 1))),
-                150 + 100 * math.cos(math.rad(90 * (i - 1)))))
+        button:setPosition(common.polarToRightAngle(150, 150, 100, i))
         self:addChild(button, 0, i)
     end
 
     local button = cc.Sprite:createWithSpriteFrameName("fire.png")
-    button:setPosition(cc.p(860, 100))
+    button:setPosition(cc.p(size.width - 100, 100))
     self:addChild(button, 0, 5)
 end
 
@@ -97,8 +98,8 @@ function PlayPadLayer:initOnTouchDirectionEvent()
     evetDispatch:addEventListenerWithSceneGraphPriority(listener, self)
 end
 
-function PlayPadLayer:initFifeButton()
-    local rect = cc.rect(780, 20, 160, 160)
+function PlayPadLayer:initFireButton()
+    local rect = cc.rect(size.width - 180, 20, 160, 160)
 
     local function onTouchBegan(touch)
         local locationInTouch = touch:getLocation()
@@ -137,7 +138,7 @@ function PlayPadLayer:ctor()
         if event == "enter" then
             self:initButton()
             self:initOnTouchDirectionEvent()
-            self:initFifeButton()
+            self:initFireButton()
         end
     end
     self:registerScriptHandler(onNodeEvent)

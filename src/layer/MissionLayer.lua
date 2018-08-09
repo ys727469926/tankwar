@@ -3,6 +3,7 @@
 --- Created by yangsen.
 --- DateTime: 2018/8/8 11:32
 ---
+local PlayScene = require("scene.PlayScene")
 
 local size = cc.Director:getInstance():getWinSize()
 
@@ -24,8 +25,7 @@ function MissionLayer:ctor()
 
     local toPlayScene = function()
         local director = cc.Director:getInstance()
-        local scene = require("scene.PlayScene")
-        local playScene = scene:create()
+        local playScene = PlayScene:create()
 
         director:replaceScene(playScene)
     end

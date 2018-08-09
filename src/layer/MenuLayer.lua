@@ -4,6 +4,7 @@
 --- DateTime: 2018/8/8 11:11
 ---
 
+local MissionScene = require("scene.MissionScene")
 local size = cc.Director:getInstance():getWinSize()
 
 local MenuLayer = class("MenuLayer", function()
@@ -45,8 +46,7 @@ function MenuLayer:ctor()
     local function startGame(sender)
         cclog("starting Game")
         local director = cc.Director:getInstance()
-        local scene = require("scene.MissionScene")
-        local missionScene = scene:create()
+        local missionScene = MissionScene:create()
 
         director:replaceScene(missionScene)
     end
