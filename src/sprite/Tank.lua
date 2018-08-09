@@ -21,9 +21,13 @@ function Tank:ctor(tankName)
     self.isMoving = false
     self.currentMoveAction = nil
 
+    --保存重复动画？
+    --self.moveAnimation = nil
+
     local spriteFrame = cc.SpriteFrameCache:getInstance()
     spriteFrame:addSpriteFrames("tank.plist")
     self:setSpriteFrame(tankName)
+
 end
 
 -- 获取当前方向
@@ -57,6 +61,9 @@ function Tank:tankMove(tag)
             destination = cc.p(190, tankY)
         end
         self.currentMoveAction = cc.MoveTo:create(time, destination)
+
+        self:startMoveAction()
+        --cclog("test")
         self:runAction(self.currentMoveAction)
         self.isMoving = true
     end
@@ -78,11 +85,13 @@ function Tank:tankMove(tag)
         if direction ~= tag then
             self:stopAction(self.currentMoveAction)
             tankTurnToCurrentDirection(tag)
+            self:startMoveAction()
         end
     else
         if direction ~= tag then
             tankTurnToCurrentDirection(tag)
         end
+        self:startMoveAction()
         tankMoveToCurrentDirection(tag)
     end
 
@@ -93,5 +102,29 @@ function Tank:tankStopMove()
     self:stopAllActions()
     self.isMoving = false
 end
+
+function Tank:startMoveAction()
+
+    --保存重复动画？
+    local spriteFrame = cc.SpriteFrameCache:getInstance()
+    spriteFrame:addSpriteFrames("tank.plist")
+
+    local animation = cc.Animation:create()
+    for i = 1, 2 do
+        local frameName = string.format("tank_move_%d.png", i)
+        --cclog("frameName = %s", frameName)
+        local tankFrame = spriteFrame:getSpriteFrame(frameName)
+        animation:addSpriteFrame(tankFrame)
+    end
+
+    animation:setDelayPerUnit(0.15)
+    animation:setRestoreOriginalFrame(true)
+    local action = cc.Animate:create(animation)
+    self:runAction(cc.RepeatForever:create(action))
+end
+
+--local function tankStopRun(sprite)
+--    sprite:stopAllActions()
+--end
 
 return Tank

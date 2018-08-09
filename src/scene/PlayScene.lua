@@ -25,35 +25,4 @@ function PlayScene:ctor()
 
 end
 
-
-
-
---添加坦克动画
-
-
-
-
-local function tankRun(sprite)
-
-    local spriteFrame = cc.SpriteFrameCache:getInstance()
-    spriteFrame:addSpriteFrames("tank.plist")
-
-    local animation = cc.Animation:create()
-    for i = 1, 2 do
-        local frameName = string.format("tank_move_%d.png", i)
-        cclog("frameName = %s", frameName)
-        local tankFrame = spriteFrame:getSpriteFrameByName(frameName)
-        animation:addSpriteFrame(tankFrame)
-    end
-
-    animation:setDelayPerUnit(0.15)
-    animation:setRestoreOriginalFrame(true)
-    local action = cc.Animate:create(animation)
-    sprite:runAction(cc.RepeatForever:create(action))
-end
-
-local function tankStopRun(sprite)
-    sprite:stopAllActions()
-end
-
 return PlayScene

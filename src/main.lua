@@ -40,9 +40,9 @@ local function main()
 
     addCloseKeyPadListener()
 
-    local scene = require("scene.MenuScene")
+    --local scene = require("scene.MenuScene")
     --为调试，直接进入playscene
-    --local scene = require("scene.PlayScene")
+    local scene = require("scene.PlayScene")
     local menuScene = scene:create()
 
     if cc.Director:getInstance():getRunningScene() then
