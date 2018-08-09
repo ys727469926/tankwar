@@ -13,6 +13,11 @@ function Bullet:ctor(direction, positionX, positionY, isHero)
     self.positionX = positionX
     self.positionY = positionY
     self.isHero = isHero
+
+    local spriteFrame = cc.SpriteFrameCache:getInstance()
+    spriteFrame:addSpriteFrames("tank.plist")
+    self:setSpriteFrame("tank_bullet.png")
+    self:setPosition(cc.p(positionX, positionY))
 end
 
 return Bullet

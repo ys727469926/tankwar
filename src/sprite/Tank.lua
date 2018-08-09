@@ -106,13 +106,13 @@ function Tank:tankMove(tag)
         if direction ~= tag then
             self:stopAction(self.currentMoveAction)
             tankTurnToCurrentDirection(tag)
-            self:startMoveAction()
+            self:runAction(cc.RepeatForever:create(self.moveAnimation:clone()))
         end
     else
         if direction ~= tag then
             tankTurnToCurrentDirection(tag)
         end
-        self:startMoveAction()
+        self:runAction(cc.RepeatForever:create(self.moveAnimation:clone()))
         tankMoveToCurrentDirection(tag)
     end
 
@@ -123,6 +123,31 @@ function Tank:tankStopMove()
     self:stopAllActions()
     self.isMoving = false
 end
+
+
+
+--坦克开火
+function Tank:tankFire()
+
+    if self.fireCalmDown == false then
+        --cclog("tank fire!")
+
+        local tankX, tankY = self:getPosition()
+        local Bullet = require("sprite.Bullet")
+
+        local bullet = Bullet:create(self.direction, tankX, tankY, true)
+        self:getParent():addChild(bullet, 1, 2)
+        self.fireCalmDown = true
+        return true
+    else
+        --cclog("fire calming!")
+        return false
+    end
+    return false
+end
+--local function tankStopRun(sprite)
+--    sprite:stopAllActions()
+--end
 
 --坦克移动动画
 --function Tank:startMoveAction()
@@ -144,24 +169,6 @@ end
 --    return action
 --    --self:runAction(cc.RepeatForever:create(action))
 --end
-
---坦克开火
-function Tank:tankFire()
-
-    if self.fireCalmDown == false then
-        cclog("tank fire!")
-        self.fireCalmDown = true
-        return true
-    else
-        cclog("fire calming!")
-        return false
-    end
-    return false
-end
---local function tankStopRun(sprite)
---    sprite:stopAllActions()
---end
-
 
 --退出时释放动画
 
