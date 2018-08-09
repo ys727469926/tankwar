@@ -23,8 +23,16 @@ end
 function playGroundLayer:operateByTag(tag)
     if tag ~= 5 then
         self:getChildByTag(1):tankMove(tag)
-
+    else
+        if self:getChildByTag(1):tankFire() then
+            local function fireCalmDown()
+                self:getChildByTag(1):setFireCalmDown()
+                cclog("already calm down")
+            end
+            performWithDelay(self, fireCalmDown, 0.5)
+        end
     end
+
 end
 
 function playGroundLayer:heroStopMove()

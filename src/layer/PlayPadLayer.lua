@@ -103,7 +103,6 @@ function PlayPadLayer:initFifeButton()
     local function onTouchBegan(touch)
         local locationInTouch = touch:getLocation()
         if cc.rectContainsPoint(rect, locationInTouch) then
-            cclog("fire!")
             self:getChildByTag(5):setOpacity(180)
             self.groundLayer:operateByTag(5)
         end

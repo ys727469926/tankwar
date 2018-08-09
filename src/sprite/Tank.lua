@@ -20,14 +20,33 @@ function Tank:ctor(tankName)
     self.direction = 1
     self.isMoving = false
     self.currentMoveAction = nil
+    self.fireCalmDown = false
+
 
     --保存重复动画？
-    --self.moveAnimation = nil
+    self.moveAnimation = nil
 
     local spriteFrame = cc.SpriteFrameCache:getInstance()
     spriteFrame:addSpriteFrames("tank.plist")
     self:setSpriteFrame(tankName)
 
+    local animation = cc.Animation:create()
+    for i = 1, 2 do
+        local frameName = string.format("tank_move_%d.png", i)
+        --cclog("frameName = %s", frameName)
+        local tankFrame = spriteFrame:getSpriteFrame(frameName)
+        animation:addSpriteFrame(tankFrame)
+    end
+
+    animation:setDelayPerUnit(0.15)
+    animation:setRestoreOriginalFrame(true)
+    local action = cc.Animate:create(animation)
+    action:retain()
+    self.moveAnimation = action
+end
+
+function Tank:setFireCalmDown()
+    self.fireCalmDown = false
 end
 
 -- 获取当前方向
@@ -62,7 +81,9 @@ function Tank:tankMove(tag)
         end
         self.currentMoveAction = cc.MoveTo:create(time, destination)
 
-        self:startMoveAction()
+        --self:startMoveAction
+
+        self:runAction(cc.RepeatForever:create(self.moveAnimation:clone()))
         --cclog("test")
         self:runAction(self.currentMoveAction)
         self.isMoving = true
@@ -103,28 +124,45 @@ function Tank:tankStopMove()
     self.isMoving = false
 end
 
-function Tank:startMoveAction()
+--坦克移动动画
+--function Tank:startMoveAction()
+--    --保存重复动画？
+--    local spriteFrame = cc.SpriteFrameCache:getInstance()
+--    spriteFrame:addSpriteFrames("tank.plist")
+--
+--    local animation = cc.Animation:create()
+--    for i = 1, 2 do
+--        local frameName = string.format("tank_move_%d.png", i)
+--        --cclog("frameName = %s", frameName)
+--        local tankFrame = spriteFrame:getSpriteFrame(frameName)
+--        animation:addSpriteFrame(tankFrame)
+--    end
+--
+--    animation:setDelayPerUnit(0.15)
+--    animation:setRestoreOriginalFrame(true)
+--    local action = cc.Animate:create(animation)
+--    return action
+--    --self:runAction(cc.RepeatForever:create(action))
+--end
 
-    --保存重复动画？
-    local spriteFrame = cc.SpriteFrameCache:getInstance()
-    spriteFrame:addSpriteFrames("tank.plist")
+--坦克开火
+function Tank:tankFire()
 
-    local animation = cc.Animation:create()
-    for i = 1, 2 do
-        local frameName = string.format("tank_move_%d.png", i)
-        --cclog("frameName = %s", frameName)
-        local tankFrame = spriteFrame:getSpriteFrame(frameName)
-        animation:addSpriteFrame(tankFrame)
+    if self.fireCalmDown == false then
+        cclog("tank fire!")
+        self.fireCalmDown = true
+        return true
+    else
+        cclog("fire calming!")
+        return false
     end
-
-    animation:setDelayPerUnit(0.15)
-    animation:setRestoreOriginalFrame(true)
-    local action = cc.Animate:create(animation)
-    self:runAction(cc.RepeatForever:create(action))
+    return false
 end
-
 --local function tankStopRun(sprite)
 --    sprite:stopAllActions()
 --end
+
+
+--退出时释放动画
 
 return Tank
