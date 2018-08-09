@@ -41,7 +41,7 @@ function PlayPadLayer:initOnTouchEvent()
         for i = 1, 4 do
             if cc.rectContainsPoint(rect[i], locationInTouch) then
                 self:getChildByTag(i):setOpacity(180)
-                self.groundLayer:tankMove(i)
+                self.groundLayer:heroMove(i)
                 break
             end
         end
@@ -49,23 +49,19 @@ function PlayPadLayer:initOnTouchEvent()
     end
 
     local resetOpacity = function()
-        for i = 1, 4 do
-            self:getChildByTag(i):setOpacity(255)
-        end
+        self:getChildByTag(self.groundLayer:getHeroDirection()):setOpacity(255)
     end
 
     local function onTouchMoved(touch)
         --cclog("on move")
         local locationInTouch = touch:getLocation()
-        local function setOpacityBatchly(tag)
-            --统一设置四个按钮的透明度，后期可由groundLayer获取移动标志以处理透明度
-            for i = 1, 4 do
-                if i == tag then
-                    self:getChildByTag(i):setOpacity(180)
-                else
-                    self:getChildByTag(i):setOpacity(255)
-                end
 
+        --设置按钮透明度
+        local function setOpacityBatchly(tag)
+            local heroDirection = self.groundLayer:getHeroDirection()
+            if heroDirection ~= tag then
+                self:getChildByTag(heroDirection):setOpacity(255)
+                self:getChildByTag(tag):setOpacity(180)
             end
         end
 
@@ -73,7 +69,7 @@ function PlayPadLayer:initOnTouchEvent()
         for i = 1, 4 do
             if cc.rectContainsPoint(rect[i], locationInTouch) then
                 setOpacityBatchly(i)
-                self.groundLayer:tankMove(i)
+                self.groundLayer:heroMove(i)
                 isInButton = true
                 break
             end
@@ -81,14 +77,14 @@ function PlayPadLayer:initOnTouchEvent()
 
         if not isInButton then
             --cclog("is not in button")
-            self.groundLayer:tankStopMove()
+            self.groundLayer:heroStopMove()
             resetOpacity()
         end
     end
 
     local function onTouchEnded()
         --统一设置所有按钮透明度恢复，后期可由groundLayer获取移动标志以处理透明度
-        self.groundLayer:tankStopMove()
+        self.groundLayer:heroStopMove()
         resetOpacity()
     end
 

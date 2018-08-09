@@ -20,12 +20,16 @@ function playGroundLayer:ctor()
     self:addChild(tank, 0, 1)
 end
 
-function playGroundLayer:tankMove(tag)
+function playGroundLayer:heroMove(tag)
     self:getChildByTag(1):tankMove(tag)
 end
 
-function playGroundLayer:tankStopMove()
+function playGroundLayer:heroStopMove()
     self:getChildByTag(1):tankStopMove()
+end
+
+function playGroundLayer:getHeroDirection()
+    return self:getChildByTag(1):getCurrentDirection()
 end
 
 return playGroundLayer
