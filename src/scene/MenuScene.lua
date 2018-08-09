@@ -4,22 +4,18 @@
 --- DateTime: 2018/8/6 17:13
 ---
 
-local size = cc.Director:getInstance():getWinSize()
 
-local menuScene = class("menuScene", function()
+local MenuScene = class("MenuScene", function()
     return cc.Scene:create()
 end)
 
-function menuScene:create()
+function MenuScene:ctor()
     cclog("menuScene init")
-    local scene = menuScene:new()
-    local layer = require("layer.menuLayer")
+    local scene = self:new()
+    local layer = require("layer.MenuLayer")
     local menuLayer = layer:create()
     scene:addChild(menuLayer)
     return scene
 end
 
-function menuScene:ctor()
-end
-
-return menuScene
+return MenuScene

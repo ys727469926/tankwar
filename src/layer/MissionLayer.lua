@@ -6,14 +6,14 @@
 
 local size = cc.Director:getInstance():getWinSize()
 
-local missionLayer = class("missionLayer", function()
+local MissionLayer = class("MissionLayer", function()
     return cc.Layer:create()
 end)
 
-function missionLayer:create()
+function MissionLayer:create()
 
     cclog("mission layer init")
-    local layer = missionLayer:new()
+    local layer = self:new()
 
     local backGroundColor = cc.LayerColor:create(cc.c3b(224, 224, 224))
     layer:addChild(backGroundColor)
@@ -25,7 +25,7 @@ function missionLayer:create()
 
     local toPlayScene = function()
         local director = cc.Director:getInstance()
-        local scene = require("scene.playScene")
+        local scene = require("scene.PlayScene")
         local playScene = scene:create()
 
         director:replaceScene(playScene)
@@ -46,4 +46,4 @@ function missionLayer:create()
     return layer
 end
 
-return missionLayer
+return MissionLayer

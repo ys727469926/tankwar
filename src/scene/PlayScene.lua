@@ -5,21 +5,19 @@
 ---
 
 
-local size = cc.Director:getInstance():getWinSize()
-
-local playScene = class("playScene", function()
+local PlayScene = class("PlayScene", function()
     return cc.Scene:create()
 end)
 
-function playScene:create()
+function PlayScene:create()
     cclog("playScene init")
-    local scene = playScene:new()
+    local scene = self:new()
 
-    local playGroundLayer = require("layer.playGroundLayer")
+    local playGroundLayer = require("layer.PlayGroundLayer")
     local groundLayer = playGroundLayer:create()
     scene:addChild(groundLayer, 0, 1)
 
-    local playPadLayer = require("layer.playPadLayer")
+    local playPadLayer = require("layer.PlayPadLayer")
     local padLayer = playPadLayer:create()
     scene:addChild(padLayer, 1, 2)
 
@@ -29,9 +27,6 @@ function playScene:create()
     return scene
 end
 
-function playScene:ctor()
-
-end
 
 
 --添加坦克动画
@@ -62,5 +57,4 @@ local function tankStopRun(sprite)
     sprite:stopAllActions()
 end
 
-
-return playScene
+return PlayScene

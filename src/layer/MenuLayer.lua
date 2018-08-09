@@ -6,11 +6,11 @@
 
 local size = cc.Director:getInstance():getWinSize()
 
-local menuLayer = class("menuLayer", function()
+local MenuLayer = class("MenuLayer", function()
     return cc.Layer:create()
 end)
 
-function menuLayer:create()
+function MenuLayer:create()
     cclog("menuLayer init")
     local layer = menuLayer:new()
 
@@ -46,7 +46,7 @@ function menuLayer:create()
     local function startGame(sender)
         cclog("starting Game")
         local director = cc.Director:getInstance()
-        local scene = require("scene.missionScene")
+        local scene = require("scene.MissionScene")
         local missionScene = scene:create()
 
         director:replaceScene(missionScene)
@@ -85,5 +85,5 @@ function menuLayer:create()
     return layer
 end
 
-return menuLayer
+return MenuLayer
 

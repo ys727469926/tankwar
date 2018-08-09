@@ -5,21 +5,17 @@
 ---
 
 
-local missionScene = class("missionScene", function()
+local MissionScene = class("MissionScene", function()
     return cc.Scene:create()
 end)
 
-function missionScene:create()
-
+function MissionScene:ctor()
     cclog("missionScene init")
-    local scene = missionScene:new()
-    local layer = require("layer.missionLayer")
+    local scene = self:new()
+    local layer = require("layer.MissionLayer")
     local missionLayer = layer:create()
     scene:addChild(missionLayer)
     return scene
 end
 
-function missionScene:ctor()
-end
-
-return missionScene
+return MissionScene
