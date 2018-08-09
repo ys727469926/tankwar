@@ -12,7 +12,7 @@ end)
 function PlayPadLayer:initButton()
 
     local spriteFrame = cc.SpriteFrameCache:getInstance()
-    spriteFrame:addSpriteFrames("arrow.plist")
+    spriteFrame:addSpriteFrames("arrows_fire.plist")
 
     --1234 上右下左
     for i = 1, 4 do
@@ -22,11 +22,12 @@ function PlayPadLayer:initButton()
         self:addChild(button, 0, i)
     end
 
+    local button = cc.Sprite:createWithSpriteFrameName("fire.png")
+    button:setPosition(cc.p(860, 100))
+    self:addChild(button, 0, 5)
 end
 
-function PlayPadLayer:initOnTouchEvent()
-
-
+function PlayPadLayer:initOnTouchDirectionEvent()
     --定义四个按钮区域
     local rect = {}
     rect[1] = cc.rect(101, 201, 98, 98) --up
@@ -35,13 +36,13 @@ function PlayPadLayer:initOnTouchEvent()
     rect[4] = cc.rect(1, 101, 98, 98)   --left
 
     local function onTouchBegan(touch)
-        cclog("on touch")
+        --cclog("on touch")
         local locationInTouch = touch:getLocation()
 
         for i = 1, 4 do
             if cc.rectContainsPoint(rect[i], locationInTouch) then
                 self:getChildByTag(i):setOpacity(180)
-                self.groundLayer:heroMove(i)
+                self.groundLayer:operateByTag(i)
                 break
             end
         end
@@ -61,15 +62,15 @@ function PlayPadLayer:initOnTouchEvent()
             local heroDirection = self.groundLayer:getHeroDirection()
             if heroDirection ~= tag then
                 self:getChildByTag(heroDirection):setOpacity(255)
-                self:getChildByTag(tag):setOpacity(180)
             end
+            self:getChildByTag(tag):setOpacity(180)
         end
 
         local isInButton = false
         for i = 1, 4 do
             if cc.rectContainsPoint(rect[i], locationInTouch) then
                 setOpacityBatchly(i)
-                self.groundLayer:heroMove(i)
+                self.groundLayer:operateByTag(i)
                 isInButton = true
                 break
             end
@@ -83,7 +84,6 @@ function PlayPadLayer:initOnTouchEvent()
     end
 
     local function onTouchEnded()
-        --统一设置所有按钮透明度恢复，后期可由groundLayer获取移动标志以处理透明度
         self.groundLayer:heroStopMove()
         resetOpacity()
     end
@@ -95,7 +95,39 @@ function PlayPadLayer:initOnTouchEvent()
 
     local evetDispatch = cc.Director:getInstance():getEventDispatcher()
     evetDispatch:addEventListenerWithSceneGraphPriority(listener, self)
+end
 
+function PlayPadLayer:initFifeButton()
+    local rect = cc.rect(780, 20, 160, 160)
+
+    local function onTouchBegan(touch)
+        local locationInTouch = touch:getLocation()
+        if cc.rectContainsPoint(rect, locationInTouch) then
+            cclog("fire!")
+            self:getChildByTag(5):setOpacity(180)
+            self.groundLayer:operateByTag(5)
+        end
+        return true
+    end
+
+    local function onTouchMoved(touch)
+        local locationInTouch = touch:getLocation()
+        if not cc.rectContainsPoint(rect, locationInTouch) then
+            self:getChildByTag(5):setOpacity(255)
+        end
+    end
+
+    local function onTouchEnded()
+        self:getChildByTag(5):setOpacity(255)
+    end
+
+    local listener = cc.EventListenerTouchOneByOne:create()
+    listener:registerScriptHandler(onTouchBegan, cc.Handler.EVENT_TOUCH_BEGAN)
+    listener:registerScriptHandler(onTouchMoved, cc.Handler.EVENT_TOUCH_MOVED)
+    listener:registerScriptHandler(onTouchEnded, cc.Handler.EVENT_TOUCH_ENDED)
+
+    local evetDispatch = cc.Director:getInstance():getEventDispatcher()
+    evetDispatch:addEventListenerWithSceneGraphPriority(listener, self)
 
 end
 
@@ -105,7 +137,8 @@ function PlayPadLayer:ctor()
     local function onNodeEvent(event)
         if event == "enter" then
             self:initButton()
-            self:initOnTouchEvent()
+            self:initOnTouchDirectionEvent()
+            self:initFifeButton()
         end
     end
     self:registerScriptHandler(onNodeEvent)

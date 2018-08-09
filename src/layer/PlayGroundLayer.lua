@@ -20,8 +20,11 @@ function playGroundLayer:ctor()
     self:addChild(tank, 0, 1)
 end
 
-function playGroundLayer:heroMove(tag)
-    self:getChildByTag(1):tankMove(tag)
+function playGroundLayer:operateByTag(tag)
+    if tag ~= 5 then
+        self:getChildByTag(1):tankMove(tag)
+
+    end
 end
 
 function playGroundLayer:heroStopMove()

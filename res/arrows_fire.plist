@@ -4,78 +4,78 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>arrow_down_50.png</key>
+            <key>arrow_1_64.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{50,50}</string>
+                <string>{64,64}</string>
                 <key>spriteSourceSize</key>
-                <string>{50,50}</string>
+                <string>{64,64}</string>
                 <key>textureRect</key>
-                <string>{{0,0},{50,50}}</string>
+                <string>{{0,0},{64,64}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>arrow_left_50.png</key>
+            <key>arrow_2_64.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{50,50}</string>
+                <string>{64,64}</string>
                 <key>spriteSourceSize</key>
-                <string>{50,50}</string>
+                <string>{64,64}</string>
                 <key>textureRect</key>
-                <string>{{50,0},{50,50}}</string>
+                <string>{{64,0},{64,64}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>arrow_middle_50.png</key>
+            <key>arrow_3_64.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{50,50}</string>
+                <string>{64,64}</string>
                 <key>spriteSourceSize</key>
-                <string>{50,50}</string>
+                <string>{64,64}</string>
                 <key>textureRect</key>
-                <string>{{100,0},{50,50}}</string>
+                <string>{{128,0},{64,64}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>arrow_right_50.png</key>
+            <key>arrow_4_64.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{50,50}</string>
+                <string>{64,64}</string>
                 <key>spriteSourceSize</key>
-                <string>{50,50}</string>
+                <string>{64,64}</string>
                 <key>textureRect</key>
-                <string>{{150,0},{50,50}}</string>
+                <string>{{0,64},{64,64}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>arrow_up_50.png</key>
+            <key>fire.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{50,50}</string>
+                <string>{160,160}</string>
                 <key>spriteSourceSize</key>
-                <string>{50,50}</string>
+                <string>{160,160}</string>
                 <key>textureRect</key>
-                <string>{{200,0},{50,50}}</string>
+                <string>{{64,64},{160,160}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -89,15 +89,15 @@
             <key>premultiplyAlpha</key>
             <false/>
             <key>realTextureFileName</key>
-            <string>arrow_50.png</string>
+            <string>arrows_fire.png</string>
             <key>size</key>
-            <string>{250,50}</string>
+            <string>{224,224}</string>
             <key>smartupdate</key>
             <string>
-                $TexturePacker:SmartUpdate:fbd8b2e971f63213bb315235d194fe74:d2ca98df60e60cbb8926b217cb7eabcc:29cd64b9948f580cf9f38e50d19e9565$
+                $TexturePacker:SmartUpdate:d252ccd0f4ec528419b17e4947311472:f686460d8dc8e5e801f43cb3215293b4:a5f575f6f085289ab71f09bfe0fdb45b$
             </string>
             <key>textureFileName</key>
-            <string>arrow_50.png</string>
+            <string>arrows_fire.png</string>
         </dict>
     </dict>
 </plist>
