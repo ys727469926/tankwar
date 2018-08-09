@@ -4,6 +4,7 @@
 --- DateTime: 2018/8/8 18:46
 ---
 
+
 local Tank = class("Tank", function(tankName)
     return cc.Sprite:create()
 end)
@@ -15,12 +16,10 @@ end
 
 function Tank:ctor(tankName)
     cclog("tank init")
-    --标记当前方向
-    self.up = 1
-    self.right = 0
-    self.down = 0
-    self.left = 0
+    --标记当前方向 1-up 2-right 3-down 4-left
+    self.direction = 1
     self.isMoving = false
+    self.currentMoveAction = nil
 
     local spriteFrame = cc.SpriteFrameCache:getInstance()
     spriteFrame:addSpriteFrames("tank.plist")
@@ -29,121 +28,63 @@ end
 
 -- 获取当前方向
 function Tank:getCurrentDirection()
-    if self.up == 1 then
-        return "up"
-    elseif self.right == 1 then
-        return "right"
-    elseif self.down == 1 then
-        return "down"
-    elseif self.left == 1 then
-        return "left"
-    end
+    return self.direction
 end
 
 -- 设置当前方向
 function Tank:setCurrentDirection(direction)
-    local currentDirection = self:getCurrentDirection()
-
-    if direction == "up" then
-        self.up = 1
-    elseif direction == "right" then
-        self.right = 1
-    elseif direction == "down" then
-        self.down = 1
-    elseif direction == "left" then
-        self.left = 1
-    end
-
-    if currentDirection == "up" then
-        self.up = 0
-    elseif currentDirection == "right" then
-        self.right = 0
-    elseif currentDirection == "down" then
-        self.down = 0
-    elseif currentDirection == "left" then
-        self.left = 0
-    end
-
-
+    self.direction = direction
 end
-
-
-
 
 --坦克移动函数
 function Tank:tankMove(tag)
-    cclog("tank Move")
     local tankX, tankY = self:getPosition()
 
     local tankMoveToCurrentDirection = function(direction)
-        local moveTo
-        if direction == "up" then
-            moveTo = cc.MoveTo:create(0.01 * (610 - tankY), cc.p(tankX, 610))
-        elseif direction == "right" then
-            moveTo = cc.MoveTo:create(0.01 * (770 - tankX), cc.p(770, tankY))
-        elseif direction == "down" then
-            moveTo = cc.MoveTo:create(0.01 * (tankY - 30), cc.p(tankX, 30))
-        elseif direction == "left" then
-            moveTo = cc.MoveTo:create(0.01 * (tankX - 190), cc.p(190, tankY))
+        local time
+        local destination
+        if direction == 1 then
+            time = 0.01 * (610 - tankY)
+            destination = cc.p(tankX, 610)
+        elseif direction == 2 then
+            time = 0.01 * (770 - tankX)
+            destination = cc.p(770, tankY)
+        elseif direction == 3 then
+            time = 0.01 * (tankY - 30)
+            destination = cc.p(tankX, 30)
+        elseif direction == 4 then
+            time = 0.01 * (tankX - 190)
+            destination = cc.p(190, tankY)
         end
-        self:runAction(moveTo)
+        self.currentMoveAction = cc.MoveTo:create(time, destination)
+        self:runAction(self.currentMoveAction)
         self.isMoving = true
     end
 
-    local direction = self:getCurrentDirection()
-    if tag == direction then
-        if not self.isMoving then
-            tankMoveToCurrentDirection(tag)
-        end
-    else
+    local tankTurnToCurrentDirection = function(direction)
         local rotate
-        if tag == "up" then
-            if direction == "left" then
-                rotate = cc.RotateBy:create(0, 90)
-            elseif direction == "down" then
-                rotate = cc.RotateBy:create(0, 180)
-            elseif direction == "right" then
-                rotate = cc.RotateBy:create(0, 270)
+        for i = 1, 4 do
+            if direction == i then
+                rotate = cc.RotateTo:create(0, 90 * (i - 1))
+                break
             end
-            self:runAction(rotate)
-            self:setCurrentDirection("up")
-
-        elseif tag == "right" then
-            if direction == "up" then
-                rotate = cc.RotateBy:create(0, 90)
-            elseif direction == "left" then
-                rotate = cc.RotateBy:create(0, 180)
-            elseif direction == "down" then
-                rotate = cc.RotateBy:create(0, 270)
-            end
-            self:runAction(rotate)
-            self:setCurrentDirection("right")
-
-        elseif tag == "down" then
-            if direction == "right" then
-                rotate = cc.RotateBy:create(0, 90)
-            elseif direction == "up" then
-                rotate = cc.RotateBy:create(0, 180)
-            elseif direction == "left" then
-                rotate = cc.RotateBy:create(0, 270)
-            end
-            self:runAction(rotate)
-            self:setCurrentDirection("down")
-        elseif tag == "left" then
-            if direction == "down" then
-                rotate = cc.RotateBy:create(0, 90)
-            elseif direction == "right" then
-                rotate = cc.RotateBy:create(0, 180)
-            elseif direction == "up" then
-                rotate = cc.RotateBy:create(0, 270)
-            end
-            self:runAction(rotate)
-            self:setCurrentDirection("left")
         end
-
-        tankMoveToCurrentDirection(tag)
+        self:runAction(rotate)
+        self:setCurrentDirection(direction)
     end
 
+    local direction = self:getCurrentDirection()
+    if self.isMoving then
+        if direction ~= tag then
+            self:stopAction(self.currentMoveAction)
+            tankTurnToCurrentDirection(tag)
+        end
+    else
+        if direction ~= tag then
+            tankTurnToCurrentDirection(tag)
+        end
+        tankMoveToCurrentDirection(tag)
+    end
 
 end
 

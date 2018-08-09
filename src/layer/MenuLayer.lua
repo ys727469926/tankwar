@@ -10,23 +10,22 @@ local MenuLayer = class("MenuLayer", function()
     return cc.Layer:create()
 end)
 
-function MenuLayer:create()
+function MenuLayer:ctor()
     cclog("menuLayer init")
-    local layer = menuLayer:new()
 
     local spriteFrame = cc.SpriteFrameCache:getInstance()
     spriteFrame:addSpriteFrames("tank.plist")
 
     local sprite = cc.Sprite:createWithSpriteFrameName("tank_stay_1.png")
     sprite:setPosition(cc.p(260, size.height - 214))
-    layer:addChild(sprite)
+    self:addChild(sprite)
 
     --在菜单之前加的label
 
     --
     local titleLabel = cc.Label:createWithSystemFont("TANK WAR", "Arial", 78)
     titleLabel:setPosition(cc.p(size.width / 2 + 30, size.height - 216))
-    layer:addChild(titleLabel)
+    self:addChild(titleLabel)
 
     --添加菜单项
     cc.MenuItemFont:setFontName("Times New Roman")
@@ -65,7 +64,7 @@ function MenuLayer:create()
     end
     menu:alignItemsHorizontallyWithPadding(50)
     menu:setPosition(cc.p(size.width / 2, size.height / 2 - 112))
-    layer:addChild(menu)
+    self:addChild(menu)
 
     --添加坦克移动动画
     local animation = cc.Animation:create()
@@ -82,7 +81,6 @@ function MenuLayer:create()
     local action = cc.Animate:create(animation)
     sprite:runAction(cc.RepeatForever:create(action))
 
-    return layer
 end
 
 return MenuLayer

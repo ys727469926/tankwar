@@ -10,18 +10,17 @@ local MissionLayer = class("MissionLayer", function()
     return cc.Layer:create()
 end)
 
-function MissionLayer:create()
+function MissionLayer:ctor()
 
     cclog("mission layer init")
-    local layer = self:new()
 
     local backGroundColor = cc.LayerColor:create(cc.c3b(224, 224, 224))
-    layer:addChild(backGroundColor)
+    self:addChild(backGroundColor)
 
     local label = cc.Label:createWithSystemFont("Mission One", "Arial", 48)
     label:setPosition(cc.p(size.width / 2, size.height / 2))
     label:setTextColor(cc.c4b(0, 0, 0, 124))
-    layer:addChild(label)
+    self:addChild(label)
 
     local toPlayScene = function()
         local director = cc.Director:getInstance()
@@ -41,9 +40,8 @@ function MissionLayer:create()
         end
     end
 
-    layer:registerScriptHandler(onNodeEvent)
+    self:registerScriptHandler(onNodeEvent)
 
-    return layer
 end
 
 return MissionLayer

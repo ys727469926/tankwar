@@ -10,26 +10,14 @@ local playGroundLayer = class("playGroundLayer", function()
     return cc.Layer:create()
 end)
 
-local initSprite = function(target)
+function playGroundLayer:ctor()
     cclog("play ground layer init sprite")
 
     local Tank = require("sprite.Tank")
 
     local tank = Tank:create("tank_stay_1.png")
     tank:setPosition(cc.p(size.width / 2, size.height / 2))
-    target:addChild(tank, 0, 1)
-end
-
-function playGroundLayer:create()
-    cclog("play groud layer init")
-    local layer = playGroundLayer.new()
-
-    initSprite(layer)
-
-    return layer
-end
-
-function playGroundLayer:ctor()
+    self:addChild(tank, 0, 1)
 end
 
 function playGroundLayer:tankMove(tag)

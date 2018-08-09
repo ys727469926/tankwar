@@ -4,114 +4,91 @@
 --- DateTime: 2018/8/8 11:42
 ---
 
-local playPadLayer = class("playGroundLayer", function()
+
+local PlayPadLayer = class("PlayPadLayer", function()
     return cc.Layer:create()
 end)
 
-local initButton = function(targert)
+function PlayPadLayer:initButton()
 
     local spriteFrame = cc.SpriteFrameCache:getInstance()
-    spriteFrame:addSpriteFrames("arrows.plist")
+    spriteFrame:addSpriteFrames("arrow.plist")
 
     --1234 上右下左
-
-    local buttonUp = cc.Sprite:createWithSpriteFrameName("arrow_up_64.png")
-    buttonUp:setPosition(cc.p(150, 250))
-    targert:addChild(buttonUp, 0, 1)
-
-    local buttonRight = cc.Sprite:createWithSpriteFrameName("arrow_right_64.png")
-    buttonRight:setPosition(cc.p(250, 150))
-    targert:addChild(buttonRight, 0, 2)
-
-    local buttonDown = cc.Sprite:createWithSpriteFrameName("arrow_down_64.png")
-    buttonDown:setPosition(cc.p(150, 50))
-    targert:addChild(buttonDown, 0, 3)
-
-    local buttonLeft = cc.Sprite:createWithSpriteFrameName("arrow_left_64.png")
-    buttonLeft:setPosition(cc.p(50, 150))
-    targert:addChild(buttonLeft, 0, 4)
+    for i = 1, 4 do
+        local button = cc.Sprite:createWithSpriteFrameName(string.format("arrow_%d_64.png", i))
+        button:setPosition(cc.p(150 + 100 * math.sin(math.rad(90 * (i - 1))),
+                150 + 100 * math.cos(math.rad(90 * (i - 1)))))
+        self:addChild(button, 0, i)
+    end
 
 end
 
-local initOnTouchEvent = function(target)
+function PlayPadLayer:initOnTouchEvent()
+
 
     --定义四个按钮区域
-    local rectLeft = cc.rect(0, 100, 100, 100)
-    local rectRight = cc.rect(200, 100, 100, 100)
-    local rectUp = cc.rect(100, 200, 100, 100)
-    local rectDown = cc.rect(100, 0, 100, 100)
+    local rect = {}
+    rect[1] = cc.rect(101, 201, 98, 98) --up
+    rect[2] = cc.rect(201, 101, 98, 98) --right
+    rect[3] = cc.rect(101, 1, 98, 98)   --down
+    rect[4] = cc.rect(1, 101, 98, 98)   --left
 
     local function onTouchBegan(touch)
         cclog("on touch")
         local locationInTouch = touch:getLocation()
 
-        if cc.rectContainsPoint(rectUp, locationInTouch) then
-            cclog("up")
-            target:getChildByTag(1):setOpacity(180)
-            target.groundLayer:tankMove("up")
-        elseif cc.rectContainsPoint(rectRight, locationInTouch) then
-            cclog("right")
-            target:getChildByTag(2):setOpacity(180)
-            target.groundLayer:tankMove("right")
-        elseif cc.rectContainsPoint(rectDown, locationInTouch) then
-            cclog("down")
-            target:getChildByTag(3):setOpacity(180)
-            target.groundLayer:tankMove("down")
-        elseif cc.rectContainsPoint(rectLeft, locationInTouch) then
-            cclog("left")
-            target:getChildByTag(4):setOpacity(180)
-            target.groundLayer:tankMove("left")
+        for i = 1, 4 do
+            if cc.rectContainsPoint(rect[i], locationInTouch) then
+                self:getChildByTag(i):setOpacity(180)
+                self.groundLayer:tankMove(i)
+                break
+            end
         end
         return true
     end
 
     local resetOpacity = function()
         for i = 1, 4 do
-            target:getChildByTag(i):setOpacity(255)
+            self:getChildByTag(i):setOpacity(255)
         end
     end
 
     local function onTouchMoved(touch)
-        cclog("on move")
+        --cclog("on move")
         local locationInTouch = touch:getLocation()
-
         local function setOpacityBatchly(tag)
             --统一设置四个按钮的透明度，后期可由groundLayer获取移动标志以处理透明度
             for i = 1, 4 do
                 if i == tag then
-                    target:getChildByTag(i):setOpacity(180)
+                    self:getChildByTag(i):setOpacity(180)
                 else
-                    target:getChildByTag(i):setOpacity(255)
+                    self:getChildByTag(i):setOpacity(255)
                 end
 
             end
         end
 
-        if cc.rectContainsPoint(rectUp, locationInTouch) then
-            cclog("move in up")
-            setOpacityBatchly(1)
-            target.groundLayer:tankMove("up")
-        elseif cc.rectContainsPoint(rectRight, locationInTouch) then
-            cclog("move in right")
-            setOpacityBatchly(2)
-            target.groundLayer:tankMove("right")
-        elseif cc.rectContainsPoint(rectDown, locationInTouch) then
-            cclog("move in down")
-            setOpacityBatchly(3)
-            target.groundLayer:tankMove("down")
-        elseif cc.rectContainsPoint(rectLeft, locationInTouch) then
-            cclog("move in left")
-            setOpacityBatchly(4)
-            target.groundLayer:tankMove("left")
-        else
-            target.groundLayer:tankStopMove()
+        local isInButton = false
+        for i = 1, 4 do
+            if cc.rectContainsPoint(rect[i], locationInTouch) then
+                setOpacityBatchly(i)
+                self.groundLayer:tankMove(i)
+                isInButton = true
+                break
+            end
+        end
+
+        if not isInButton then
+            --cclog("is not in button")
+            self.groundLayer:tankStopMove()
             resetOpacity()
         end
     end
 
     local function onTouchEnded()
         --统一设置所有按钮透明度恢复，后期可由groundLayer获取移动标志以处理透明度
-        target.groundLayer:tankStopMove()
+        self.groundLayer:tankStopMove()
         resetOpacity()
     end
 
@@ -121,20 +98,21 @@ local initOnTouchEvent = function(target)
     listener:registerScriptHandler(onTouchEnded, cc.Handler.EVENT_TOUCH_ENDED)
 
     local evetDispatch = cc.Director:getInstance():getEventDispatcher()
-    evetDispatch:addEventListenerWithSceneGraphPriority(listener, target)
+    evetDispatch:addEventListenerWithSceneGraphPriority(listener, self)
 
 
 end
 
-function playPadLayer:create()
-    cclog("gamepad layer init")
-    local layer = playPadLayer:new()
+function PlayPadLayer:ctor()
+    cclog("pad layer ctor")
 
-    initButton(layer)
-
-    initOnTouchEvent(layer)
-
-    return layer
+    local function onNodeEvent(event)
+        if event == "enter" then
+            self:initButton()
+            self:initOnTouchEvent()
+        end
+    end
+    self:registerScriptHandler(onNodeEvent)
 end
 
-return playPadLayer
+return PlayPadLayer

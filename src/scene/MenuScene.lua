@@ -11,11 +11,9 @@ end)
 
 function MenuScene:ctor()
     cclog("menuScene init")
-    local scene = self:new()
     local layer = require("layer.MenuLayer")
     local menuLayer = layer:create()
-    scene:addChild(menuLayer)
-    return scene
+    self:addChild(menuLayer)
 end
 
 return MenuScene
