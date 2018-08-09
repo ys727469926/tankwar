@@ -69,7 +69,7 @@ function Tank:tankMove(tag)
     local tankX, tankY = self:getPosition()
 
     local tankMoveToCurrentDirection = function(direction)
-        local time, destination = common.initMoveTo(direction, 0.005, tankX, tankY, size.width - 248 - 30, 248 + 30, 610, 30)
+        local time, destination = common.initMoveTo(direction, 0.005, tankX, tankY, size.width - 248 - 30, 248 + 30, size.height - 30, 30)
         self.currentMoveAction = cc.MoveTo:create(time, destination)
 
         --self:startMoveAction
