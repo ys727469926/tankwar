@@ -16,9 +16,6 @@ function playGroundLayer:ctor()
 
 
     local tank = Tank:create("tank_stay_1.png")
-    cclog(size.width)
-    cclog(size.width / 2)
-    cclog(size.height)
     tank:setPosition(cc.p(size.width / 2, size.height / 2))
     self:addChild(tank, 0, 1)
 end

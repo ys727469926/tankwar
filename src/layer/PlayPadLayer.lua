@@ -35,28 +35,39 @@ function PlayPadLayer:initOnTouchDirectionEvent()
     rect[2] = cc.rect(201, 101, 98, 98) --right
     rect[3] = cc.rect(101, 1, 98, 98)   --down
     rect[4] = cc.rect(1, 101, 98, 98)   --left
+    rect[5] = cc.rect(size.width - 180, 20, 160, 160) --fire
 
-    local function onTouchBegan(touch)
+    local function onTouchesBegan(touches)
         --cclog("on touch")
-        local locationInTouch = touch:getLocation()
+        local locationInTouch = touches[1]:getLocation()
 
-        for i = 1, 4 do
-            if cc.rectContainsPoint(rect[i], locationInTouch) then
-                self:getChildByTag(i):setOpacity(180)
-                self.groundLayer:operateByTag(i)
-                break
+        if cc.rectContainsPoint(rect[5], locationInTouch) then
+            self:getChildByTag(5):setOpacity(180)
+            self.groundLayer:operateByTag(5)
+            return true
+        else
+            if self.isMovePadUsing == 0 then
+                for i = 1, 4 do
+                    if cc.rectContainsPoint(rect[i], locationInTouch) then
+                        self:getChildByTag(i):setOpacity(180)
+                        self.isMovePadUsing = true
+                        self.groundLayer:operateByTag(i)
+                        return true
+                    end
+                end
             end
         end
-        return true
+        return false
+
     end
 
     local resetOpacity = function()
         self:getChildByTag(self.groundLayer:getHeroDirection()):setOpacity(255)
     end
 
-    local function onTouchMoved(touch)
+    local function onTouchesMoved(touches)
         --cclog("on move")
-        local locationInTouch = touch:getLocation()
+        local locationInTouch_1 = touches[1]:getLocation()
 
         --设置按钮透明度
         local function setOpacityBatchly(tag)
@@ -67,32 +78,53 @@ function PlayPadLayer:initOnTouchDirectionEvent()
             self:getChildByTag(tag):setOpacity(180)
         end
 
-        local isInButton = false
-        for i = 1, 4 do
-            if cc.rectContainsPoint(rect[i], locationInTouch) then
-                setOpacityBatchly(i)
-                self.groundLayer:operateByTag(i)
-                isInButton = true
-                break
+        local movePadEvent = function(location)
+            local isInButton = false
+            for i = 1, 4 do
+                if cc.rectContainsPoint(rect[i], locationInTouch_1) then
+                    setOpacityBatchly(i)
+                    self.groundLayer:operateByTag(i)
+                    isInButton = true
+                    if not self.isMovePadUsing then
+                        self.isMovePadUsing = true
+                    end
+                    break
+                end
+            end
+
+            if not isInButton then
+                self.isMovePadUsing = false
+                self.groundLayer:heroStopMove()
+                resetOpacity()
+            end
+
+        end
+
+        movePadEvent(locationInTouch_1)
+
+        if touches[2] then
+            local locationInTouch_2 = touches[2]:getLocation()
+            if not self.isMovePadUsing then
+                movePadEvent(locationInTouch_2)
             end
         end
 
-        if not isInButton then
-            --cclog("is not in button")
-            self.groundLayer:heroStopMove()
-            resetOpacity()
+    end
+    --
+    local function onTouchesEnded(touches)
+        local locationInTouch = touches[1]:getLocation()
+        for i = 1, 4 do
+            if cc.rectContainsPoint(rect[i], locationInTouch) then
+                self.groundLayer:heroStopMove()
+                resetOpacity()
+            end
         end
     end
 
-    local function onTouchEnded()
-        self.groundLayer:heroStopMove()
-        resetOpacity()
-    end
-
-    local listener = cc.EventListenerTouchOneByOne:create()
-    listener:registerScriptHandler(onTouchBegan, cc.Handler.EVENT_TOUCH_BEGAN)
-    listener:registerScriptHandler(onTouchMoved, cc.Handler.EVENT_TOUCH_MOVED)
-    listener:registerScriptHandler(onTouchEnded, cc.Handler.EVENT_TOUCH_ENDED)
+    local listener = cc.EventListenerTouchAllAtOnce:create()
+    listener:registerScriptHandler(onTouchesBegan, cc.Handler.EVENT_TOUCHES_BEGAN)
+    listener:registerScriptHandler(onTouchesMoved, cc.Handler.EVENT_TOUCHES_MOVED)
+    listener:registerScriptHandler(onTouchesEnded, cc.Handler.EVENT_TOUCHES_ENDED)
 
     local evetDispatch = cc.Director:getInstance():getEventDispatcher()
     evetDispatch:addEventListenerWithSceneGraphPriority(listener, self)
@@ -133,6 +165,8 @@ end
 
 function PlayPadLayer:ctor()
     cclog("pad layer ctor")
+    self.isMovePadUsing = false
+    self.isInMovePad = false
 
     local function onNodeEvent(event)
         if event == "enter" then

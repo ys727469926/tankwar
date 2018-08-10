@@ -45,6 +45,7 @@ local function main()
     --local scene = require("scene.MenuScene")
     --为调试，直接进入playscene
     local menuScene = PlayScene:create()
+    --
 
     if cc.Director:getInstance():getRunningScene() then
         cc.Director:getInstance():replaceScene(menuScene)
