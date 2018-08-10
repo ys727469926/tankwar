@@ -34,11 +34,20 @@ function Bullet:ctor(direction, positionX, positionY, isHero)
             break
         end
     end
+
+    local physicsBody = cc.PhysicsBody:createBox(self:getContentSize())
+    physicsBody:setDynamic(false)
+    self:addComponent(physicsBody)
 end
 
 function Bullet:fly()
 
-    local time, destination = common.initMoveTo(self.direction, 0.0025, self.positionX, self.positionY, size.width - 248, 248, size.height, 0)
+    local time, destination = common.initMoveTo(
+            self.direction,
+            0.0025,
+            self.positionX,
+            self.positionY,
+            0)
     local action = cc.MoveTo:create(time, destination)
 
     local flyOutOfScene = function()

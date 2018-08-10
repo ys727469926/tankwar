@@ -137,38 +137,7 @@ function PlayPadLayer:initOnTouchDirectionEvent()
     evetDispatch:addEventListenerWithSceneGraphPriority(listener, self)
 end
 
---function PlayPadLayer:initFireButton()
---    local rect = cc.rect(size.width - 180, 20, 160, 160)
---
---    local function onTouchBegan(touch)
---        local locationInTouch = touch:getLocation()
---        if cc.rectContainsPoint(rect, locationInTouch) then
---            self:getChildByTag(5):setOpacity(180)
---            self.groundLayer:operateByTag(5)
---        end
---        return true
---    end
---
---    local function onTouchMoved(touch)
---        local locationInTouch = touch:getLocation()
---        if not cc.rectContainsPoint(rect, locationInTouch) then
---            self:getChildByTag(5):setOpacity(255)
---        end
---    end
---
---    local function onTouchEnded()
---        self:getChildByTag(5):setOpacity(255)
---    end
---
---    local listener = cc.EventListenerTouchOneByOne:create()
---    listener:registerScriptHandler(onTouchBegan, cc.Handler.EVENT_TOUCH_BEGAN)
---    listener:registerScriptHandler(onTouchMoved, cc.Handler.EVENT_TOUCH_MOVED)
---    listener:registerScriptHandler(onTouchEnded, cc.Handler.EVENT_TOUCH_ENDED)
---
---    local evetDispatch = cc.Director:getInstance():getEventDispatcher()
---    evetDispatch:addEventListenerWithSceneGraphPriority(listener, self)
---
---end
+
 
 function PlayPadLayer:ctor()
     cclog("pad layer ctor")
@@ -179,10 +148,10 @@ function PlayPadLayer:ctor()
         if event == "enter" then
             self:initButton()
             self:initOnTouchDirectionEvent()
-            --self:initFireButton()
         end
     end
     self:registerScriptHandler(onNodeEvent)
+    cclog('5')
 end
 
 return PlayPadLayer

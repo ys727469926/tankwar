@@ -4,6 +4,8 @@
 --- DateTime: 2018/8/9 20:29
 ---
 
+math.randomseed(tonumber(tostring(os.time()):reverse():sub(1, 7)))
+
 local common = {}
 
 common.polarToRightAngle = function(x, y, length, radian)
@@ -13,9 +15,16 @@ common.polarToRightAngle = function(x, y, length, radian)
 
 end
 
-common.initMoveTo = function(direction, timePerPixel, originX, originY, maxX, minX, maxY, minY)
+common.initMoveTo = function(direction, timePerPixel, originX, originY, obligate)
     local time
     local destination
+    local size = cc.Director:getInstance():getWinSize()
+
+    local minX = (size.width - size.height) / 2 + obligate
+    local maxX = size.width - minX
+    local minY = obligate
+    local maxY = size.height - minY
+
     if direction == 1 then
         time = timePerPixel * (maxY - originY)
         destination = cc.p(originX, maxY)
@@ -31,5 +40,10 @@ common.initMoveTo = function(direction, timePerPixel, originX, originY, maxX, mi
     end
     return time, destination
 end
+
+common.getRandNum = function(min, max)
+    return math.random(min, max)
+end
+
 
 return common

@@ -9,7 +9,7 @@ local PlayGroundLayer = require("layer.PlayGroundLayer")
 local PlayPadLayer = require("layer.PlayPadLayer")
 
 local PlayScene = class("PlayScene", function()
-    return cc.Scene:create()
+    return cc.Scene:createWithPhysics()
 end)
 
 function PlayScene:ctor()

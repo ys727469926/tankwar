@@ -27,10 +27,7 @@ function Tank:ctor(tankName)
     self.currentMoveAction = nil
     self.fireCalmDown = false
 
-
-    --保存重复动画？
-    self.moveAnimation = nil
-
+    --渲染移动动画
     local spriteFrame = cc.SpriteFrameCache:getInstance()
     spriteFrame:addSpriteFrames("tank.plist")
     self:setSpriteFrame(tankName)
@@ -48,6 +45,12 @@ function Tank:ctor(tankName)
     local action = cc.Animate:create(animation)
     action:retain()
     self.moveAnimation = action
+
+    --添加物理刚体
+    local physicsBody = cc.PhysicsBody:createBox(self:getContentSize())
+    physicsBody:setDynamic(false)
+    self:addComponent(physicsBody)
+
 end
 
 function Tank:setFireCalmDown()
@@ -69,7 +72,12 @@ function Tank:tankMove(tag)
     local tankX, tankY = self:getPosition()
 
     local tankMoveToCurrentDirection = function(direction)
-        local time, destination = common.initMoveTo(direction, 0.005, tankX, tankY, size.width - 248 - 30, 248 + 30, size.height - 30, 30)
+        local time, destination = common.initMoveTo(
+                direction,
+                0.005,
+                tankX,
+                tankY,
+                self:getContentSize().width / 2)
         self.currentMoveAction = cc.MoveTo:create(time, destination)
 
         --self:startMoveAction

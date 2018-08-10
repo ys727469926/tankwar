@@ -3,7 +3,7 @@
 --- Created by yangsen.
 --- DateTime: 2018/8/8 11:41
 ---
-
+local common = require("common")
 local Tank = require("sprite.Tank")
 local size = cc.Director:getInstance():getWinSize()
 
@@ -14,10 +14,46 @@ end)
 function playGroundLayer:ctor()
     cclog("play ground layer init sprite")
 
-
     local tank = Tank:create("tank_stay_1.png")
     tank:setPosition(cc.p(size.width / 2, size.height / 2))
     self:addChild(tank, 0, 1)
+
+    local edgeNode = cc.Node:create()
+    edgeNode:setPosition(size.width / 2, size.height / 2)
+    edgeNode:setPhysicsBody(
+            cc.PhysicsBody:createEdgeBox(cc.size(size.height, size.height),
+                    cc.PhysicsMaterial(0.1, 1.0, 0.0)
+            ))
+    self:addChild(edgeNode)
+
+    --local function onNodeEvent(tag)
+    --    if tag == "enter" then
+    --        cclog("in enter")
+    --        self:onEnter()
+    --    end
+    --end
+    --
+    --self:registerScriptHandler(onNodeEvent)
+
+    cclog("test physic")
+    local spriteFrame = cc.SpriteFrameCache:getInstance()
+    spriteFrame:addSpriteFrames("tank.plist")
+    for i = 1, 5 do
+
+        local sprite = cc.Sprite:createWithSpriteFrameName("tank_stay_1.png")
+        local physicsBody = cc.PhysicsBody:createBox(sprite:getContentSize())
+        physicsBody:setGravityEnable(false)
+        --physicsBody:setVelocity(cc.p(common.getRandNum(-1000, 1000), common.getRandNum(-1000, 1000)))
+        physicsBody:setTag(0x80)
+        sprite:setPosition(cc.p(
+                common.getRandNum(30 + (size.width - size.height) / 2, size.width - 30 - (size.width - size.height) / 2),
+                common.getRandNum(30, size.height - 30)
+        ))
+        sprite:addComponent(physicsBody)
+
+        self:addChild(sprite)
+    end
+
 end
 
 function playGroundLayer:operateByTag(tag)
@@ -35,12 +71,36 @@ function playGroundLayer:operateByTag(tag)
 
 end
 
+--使英雄停止移动
 function playGroundLayer:heroStopMove()
     self:getChildByTag(1):tankStopMove()
 end
 
+--获得英雄方向
 function playGroundLayer:getHeroDirection()
     return self:getChildByTag(1):getCurrentDirection()
 end
+
+--function playGroundLayer:OnEnter()
+--    --初始化物理引擎
+--    cclog("test physic")
+--    local spriteFrame = cc.SpriteFrameCache:getInstance()
+--    spriteFrame:addSpriteFrames("tank.plist")
+--    for i = 1, 5 do
+--
+--        local sprite = cc.Sprite:createWithSpriteFrameName("tank_boom_1.png")
+--        local physicsBody = cc.PhysicsBody:createBox(sprite:getContentSize())
+--        physicsBody:setGravityEnable(false)
+--        physicsBody:setVelocity(ccp(common.getRandNum(-500, 500), common.getRandNum(-500, 500)))
+--        physicsBody:setTag(DRAG_BODYS_TAG)
+--        sprite:setPosition(cc.p(
+--                common.getRandNum(30, size.width - 30),
+--                common.getRandNum(30, size.height - 30)
+--        ))
+--        sprite:addComponent(physicsBody)
+--
+--        self:addChild(sprite)
+--    end
+--end
 
 return playGroundLayer
