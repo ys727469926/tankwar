@@ -37,6 +37,9 @@ function Bullet:ctor(direction, positionX, positionY, isHero)
 
     local physicsBody = cc.PhysicsBody:createBox(self:getContentSize())
     physicsBody:setDynamic(false)
+
+    physicsBody:setCategoryBitmask(0x02)
+    physicsBody:setContactTestBitmask(0x01)
     self:addComponent(physicsBody)
 end
 

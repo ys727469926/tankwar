@@ -49,6 +49,8 @@ function Tank:ctor(tankName)
     --添加物理刚体
     local physicsBody = cc.PhysicsBody:createBox(self:getContentSize())
     physicsBody:setDynamic(false)
+    physicsBody:setCategoryBitmask(0x01)
+    physicsBody:setContactTestBitmask(0x02)
     self:addComponent(physicsBody)
 
 end
@@ -130,7 +132,8 @@ function Tank:tankFire()
 
         local tankX, tankY = self:getPosition()
         local bullet = Bullet:create(self.direction, tankX, tankY, true)
-        self:getParent():addChild(bullet, 1, 2)
+        bullet:setTag(2)
+        self:getParent():addChild(bullet, 1)
         bullet:fly()
         self.fireCalmDown = true
         return true

@@ -15,6 +15,7 @@ function playGroundLayer:ctor()
     cclog("play ground layer init sprite")
 
     local tank = Tank:create("tank_stay_1.png")
+    tank:setTag(1)
     tank:setPosition(cc.p(size.width / 2, size.height / 2))
     self:addChild(tank, 0, 1)
 
@@ -26,24 +27,27 @@ function playGroundLayer:ctor()
             ))
     self:addChild(edgeNode)
 
-    --local function onNodeEvent(tag)
-    --    if tag == "enter" then
-    --        cclog("in enter")
-    --        self:onEnter()
-    --    end
-    --end
-    --
-    --self:registerScriptHandler(onNodeEvent)
+    local function onNodeEvent(tag)
+        if tag == "enter" then
+            cclog("in enter")
+            self:onEnter()
+        end
+    end
 
+    self:registerScriptHandler(onNodeEvent)
+
+
+    --生成5个坦克测试碰撞，后期删除
     cclog("test physic")
     local spriteFrame = cc.SpriteFrameCache:getInstance()
     spriteFrame:addSpriteFrames("tank.plist")
     for i = 1, 5 do
 
-        local sprite = cc.Sprite:createWithSpriteFrameName("tank_stay_1.png")
+        local sprite = cc.Sprite:createWithSpriteFrameName("tank_enemy_2.png")
+        sprite:setTag(3)
         local physicsBody = cc.PhysicsBody:createBox(sprite:getContentSize())
         physicsBody:setGravityEnable(false)
-        --physicsBody:setVelocity(cc.p(common.getRandNum(-1000, 1000), common.getRandNum(-1000, 1000)))
+        physicsBody:setVelocity(cc.p(common.getRandNum(-1000, 1000), common.getRandNum(-1000, 1000)))
         physicsBody:setTag(0x80)
         sprite:setPosition(cc.p(
                 common.getRandNum(30 + (size.width - size.height) / 2, size.width - 30 - (size.width - size.height) / 2),
@@ -81,26 +85,30 @@ function playGroundLayer:getHeroDirection()
     return self:getChildByTag(1):getCurrentDirection()
 end
 
---function playGroundLayer:OnEnter()
---    --初始化物理引擎
---    cclog("test physic")
---    local spriteFrame = cc.SpriteFrameCache:getInstance()
---    spriteFrame:addSpriteFrames("tank.plist")
---    for i = 1, 5 do
---
---        local sprite = cc.Sprite:createWithSpriteFrameName("tank_boom_1.png")
---        local physicsBody = cc.PhysicsBody:createBox(sprite:getContentSize())
---        physicsBody:setGravityEnable(false)
---        physicsBody:setVelocity(ccp(common.getRandNum(-500, 500), common.getRandNum(-500, 500)))
---        physicsBody:setTag(DRAG_BODYS_TAG)
---        sprite:setPosition(cc.p(
---                common.getRandNum(30, size.width - 30),
---                common.getRandNum(30, size.height - 30)
---        ))
---        sprite:addComponent(physicsBody)
---
---        self:addChild(sprite)
---    end
---end
+function playGroundLayer:onEnter()
+    --初始化物理引擎
+    cclog('init contact')
+
+    local function onContactBegin(contact)
+        cclog("in contact")
+        local spriteA = contact:getShapeA():getBody():getNode()
+        local spriteB = contact:getShapeB():getBody():getNode()
+        print(spriteA:getTag() .. '    ' .. spriteB:getTag())
+        if ((spriteA:getTag() == 2) and (spriteB:getTag() == 1))
+                or
+                ((spriteA:getTag() == 1) and (spriteB:getTag() == 2)) then
+            cclog("hit the mark!!")
+
+
+        end
+    end
+
+    local listener = cc.EventListenerPhysicsContact:create()
+    listener:registerScriptHandler(onContactBegin, cc.Handler.EVENT_PHYSICS_CONTACT_BEGIN)
+
+    local evetDispatch = cc.Director:getInstance():getEventDispatcher()
+    evetDispatch:addEventListenerWithSceneGraphPriority(listener, self)
+
+end
 
 return playGroundLayer

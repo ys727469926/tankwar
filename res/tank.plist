@@ -529,6 +529,21 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
+            <key>tank_enemy_2.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{61,61}</string>
+                <key>spriteSourceSize</key>
+                <string>{61,61}</string>
+                <key>textureRect</key>
+                <string>{{510,514},{61,61}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
             <key>tank_fire_1.png</key>
             <dict>
                 <key>aliases</key>
@@ -540,7 +555,7 @@
                 <key>spriteSourceSize</key>
                 <string>{86,89}</string>
                 <key>textureRect</key>
-                <string>{{510,514},{86,89}}</string>
+                <string>{{571,514},{86,89}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -555,7 +570,7 @@
                 <key>spriteSourceSize</key>
                 <string>{86,89}</string>
                 <key>textureRect</key>
-                <string>{{596,514},{86,89}}</string>
+                <string>{{657,514},{86,89}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -570,7 +585,7 @@
                 <key>spriteSourceSize</key>
                 <string>{86,89}</string>
                 <key>textureRect</key>
-                <string>{{682,514},{86,89}}</string>
+                <string>{{743,514},{86,89}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -585,7 +600,7 @@
                 <key>spriteSourceSize</key>
                 <string>{86,89}</string>
                 <key>textureRect</key>
-                <string>{{768,514},{86,89}}</string>
+                <string>{{829,514},{86,89}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -600,7 +615,7 @@
                 <key>spriteSourceSize</key>
                 <string>{86,89}</string>
                 <key>textureRect</key>
-                <string>{{854,514},{86,89}}</string>
+                <string>{{915,514},{86,89}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -615,7 +630,7 @@
                 <key>spriteSourceSize</key>
                 <string>{61,61}</string>
                 <key>textureRect</key>
-                <string>{{940,514},{61,61}}</string>
+                <string>{{0,608},{61,61}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -630,7 +645,7 @@
                 <key>spriteSourceSize</key>
                 <string>{61,61}</string>
                 <key>textureRect</key>
-                <string>{{0,608},{61,61}}</string>
+                <string>{{61,608},{61,61}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -645,7 +660,7 @@
                 <key>spriteSourceSize</key>
                 <string>{61,61}</string>
                 <key>textureRect</key>
-                <string>{{61,608},{61,61}}</string>
+                <string>{{122,608},{61,61}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -660,7 +675,7 @@
                 <key>spriteSourceSize</key>
                 <string>{61,61}</string>
                 <key>textureRect</key>
-                <string>{{122,608},{61,61}}</string>
+                <string>{{183,608},{61,61}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -679,7 +694,7 @@
             <string>{1021,669}</string>
             <key>smartupdate</key>
             <string>
-                $TexturePacker:SmartUpdate:0ffbb7df0ed353cea02e61087d250b38:de5c3814061457f9b7a0dc2584394704:61f327f8e64f826627a60724782c709f$
+                $TexturePacker:SmartUpdate:3925f2558e77007c3935741fc743d2e8:27e868a359f55db8f2707e9b40b8af55:61f327f8e64f826627a60724782c709f$
             </string>
             <key>textureFileName</key>
             <string>tank.png</string>
