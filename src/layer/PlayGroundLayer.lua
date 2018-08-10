@@ -29,7 +29,7 @@ function playGroundLayer:operateByTag(tag)
                 self:getChildByTag(1):setFireCalmDown()
                 --cclog("already calm down")
             end
-            performWithDelay(self, fireCalmDown, 0.75)
+            performWithDelay(self, fireCalmDown, 0.5)
         end
     end
 

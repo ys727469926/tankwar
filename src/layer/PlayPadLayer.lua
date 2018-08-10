@@ -19,38 +19,40 @@ function PlayPadLayer:initButton()
     --1234 上右下左
     for i = 1, 4 do
         local button = cc.Sprite:createWithSpriteFrameName(string.format("arrow_%d_64.png", i))
-        button:setPosition(common.polarToRightAngle(150, 150, 100, i))
+        button:setPosition(common.polarToRightAngle(240, 240, 160, i))
         self:addChild(button, 0, i)
     end
 
     local button = cc.Sprite:createWithSpriteFrameName("fire.png")
-    button:setPosition(cc.p(size.width - 100, 100))
+    button:setPosition(cc.p(size.width - 160, 160))
     self:addChild(button, 0, 5)
 end
 
 function PlayPadLayer:initOnTouchDirectionEvent()
     --定义四个按钮区域
     local rect = {}
-    rect[1] = cc.rect(101, 201, 98, 98) --up
-    rect[2] = cc.rect(201, 101, 98, 98) --right
-    rect[3] = cc.rect(101, 1, 98, 98)   --down
-    rect[4] = cc.rect(1, 101, 98, 98)   --left
-    rect[5] = cc.rect(size.width - 180, 20, 160, 160) --fire
+    rect[1] = cc.rect(161, 321, 158, 158) --up
+    rect[2] = cc.rect(321, 161, 158, 158) --right
+    rect[3] = cc.rect(161, 1, 158, 158)   --down
+    rect[4] = cc.rect(1, 161, 158, 158)   --left
+    rect[5] = cc.rect(size.width - 260, 100, 160, 160) --fire
 
     local function onTouchesBegan(touches)
         --cclog("on touch")
         local locationInTouch = touches[1]:getLocation()
+
+        --print(locationInTouch.x..'  '..locationInTouch.y)
 
         if cc.rectContainsPoint(rect[5], locationInTouch) then
             self:getChildByTag(5):setOpacity(180)
             local function fireCalmDown()
                 self:getChildByTag(5):setOpacity(255)
             end
-            performWithDelay(self, fireCalmDown, 0.75)
+            performWithDelay(self, fireCalmDown, 0.5)
             self.groundLayer:operateByTag(5)
             return true
         else
-            if self.isMovePadUsing == 0 then
+            if self.isMovePadUsing == false then
                 for i = 1, 4 do
                     if cc.rectContainsPoint(rect[i], locationInTouch) then
                         self:getChildByTag(i):setOpacity(180)
