@@ -4,6 +4,21 @@
     <dict>
         <key>frames</key>
         <dict>
+            <key>bullet.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{14,32}</string>
+                <key>spriteSourceSize</key>
+                <string>{14,32}</string>
+                <key>textureRect</key>
+                <string>{{0,0},{14,32}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
             <key>tank_boom_1.png</key>
             <dict>
                 <key>aliases</key>
@@ -15,7 +30,7 @@
                 <key>spriteSourceSize</key>
                 <string>{135,130}</string>
                 <key>textureRect</key>
-                <string>{{0,0},{135,130}}</string>
+                <string>{{14,0},{135,130}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -45,7 +60,7 @@
                 <key>spriteSourceSize</key>
                 <string>{135,130}</string>
                 <key>textureRect</key>
-                <string>{{135,0},{135,130}}</string>
+                <string>{{149,0},{135,130}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -60,7 +75,7 @@
                 <key>spriteSourceSize</key>
                 <string>{135,130}</string>
                 <key>textureRect</key>
-                <string>{{270,0},{135,130}}</string>
+                <string>{{284,0},{135,130}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -75,7 +90,7 @@
                 <key>spriteSourceSize</key>
                 <string>{135,130}</string>
                 <key>textureRect</key>
-                <string>{{405,0},{135,130}}</string>
+                <string>{{419,0},{135,130}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -90,7 +105,7 @@
                 <key>spriteSourceSize</key>
                 <string>{135,130}</string>
                 <key>textureRect</key>
-                <string>{{540,0},{135,130}}</string>
+                <string>{{554,0},{135,130}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -105,7 +120,7 @@
                 <key>spriteSourceSize</key>
                 <string>{135,130}</string>
                 <key>textureRect</key>
-                <string>{{675,0},{135,130}}</string>
+                <string>{{689,0},{135,130}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -120,7 +135,7 @@
                 <key>spriteSourceSize</key>
                 <string>{135,130}</string>
                 <key>textureRect</key>
-                <string>{{810,0},{135,130}}</string>
+                <string>{{824,0},{135,130}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -664,7 +679,7 @@
             <string>{1021,669}</string>
             <key>smartupdate</key>
             <string>
-                $TexturePacker:SmartUpdate:485e5beb73c748ad70b3c616e142080b:739d9def77455f547837d1ac0c99c2de:61f327f8e64f826627a60724782c709f$
+                $TexturePacker:SmartUpdate:0ffbb7df0ed353cea02e61087d250b38:de5c3814061457f9b7a0dc2584394704:61f327f8e64f826627a60724782c709f$
             </string>
             <key>textureFileName</key>
             <string>tank.png</string>

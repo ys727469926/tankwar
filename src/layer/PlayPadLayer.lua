@@ -122,6 +122,7 @@ function PlayPadLayer:initOnTouchDirectionEvent()
         for i = 1, 4 do
             if cc.rectContainsPoint(rect[i], locationInTouch) then
                 self.groundLayer:heroStopMove()
+                self.isMovePadUsing = false
                 resetOpacity()
             end
         end

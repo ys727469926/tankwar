@@ -19,7 +19,11 @@ function Bullet:ctor(direction, positionX, positionY, isHero)
 
     local spriteFrame = cc.SpriteFrameCache:getInstance()
     spriteFrame:addSpriteFrames("tank.plist")
-    self:setSpriteFrame("tank_bullet.png")
+    self:setSpriteFrame("bullet.png")
+
+    --local testSize = self:getContentSize()
+    --print('test  '..testSize.width.."   "..testSize.height)
+
     for i = 1, 4 do
         if direction == i then
             self:setRotation(90 * (i - 1))
