@@ -46,37 +46,24 @@ function playGroundLayer:ctor()
 
     --生成5个坦克测试碰撞，后期删除
     cclog("test physic")
-    local spriteFrame = cc.SpriteFrameCache:getInstance()
-    spriteFrame:addSpriteFrames("tank.plist")
     for i = 1, 5 do
-
-        local sprite = cc.Sprite:createWithSpriteFrameName("tank_enemy_2.png")
-        local physicsBody = cc.PhysicsBody:createBox(sprite:getContentSize())
-
-        physicsBody:setCategoryBitmask(ENEMY)
-        physicsBody:setContactTestBitmask(3)
-        physicsBody:setDynamic(false)
-        physicsBody:setGravityEnable(false)
-        --physicsBody:setVelocity(cc.p(common.getRandNum(-1000, 1000), common.getRandNum(-1000, 1000)))
-        --physicsBody:setEnabled(false)
-        sprite:setPosition(cc.p(
+        local enemy = Tank:create(ENEMY)
+        enemy:setPosition(cc.p(
                 common.getRandNum(30 + (size.width - size.height) / 2, size.width - 30 - (size.width - size.height) / 2),
                 common.getRandNum(30, size.height - 30)
         ))
-        sprite:addComponent(physicsBody)
-
-        self:addChild(sprite, 0, ENEMY)
+        self:addChild(enemy, 0, ENEMY)
     end
 
 end
 
 function playGroundLayer:operateByTag(tag)
     if tag ~= 5 then
-        self:getChildByTag(1):tankMove(tag)
+        self:getChildByTag(HERO):tankMove(tag)
     else
-        if self:getChildByTag(1):tankFire() then
+        if self:getChildByTag(HERO):tankFire() then
             local function fireCalmDown()
-                self:getChildByTag(1):setFireCalmDown()
+                self:getChildByTag(HERO):setFireCalmDown()
                 --cclog("already calm down")
             end
             performWithDelay(self, fireCalmDown, 0.5)
@@ -87,12 +74,12 @@ end
 
 --使英雄停止移动
 function playGroundLayer:heroStopMove()
-    self:getChildByTag(1):tankStopMove()
+    self:getChildByTag(HERO):tankStopMove()
 end
 
 --获得英雄方向
 function playGroundLayer:getHeroDirection()
-    return self:getChildByTag(1):getCurrentDirection()
+    return self:getChildByTag(HERO):getCurrentDirection()
 end
 
 function playGroundLayer:onEnter()
@@ -104,12 +91,12 @@ function playGroundLayer:onEnter()
         local spriteA = contact:getShapeA():getBody():getNode()
         local spriteB = contact:getShapeB():getBody():getNode()
         print(spriteA:getTag() .. '    ' .. spriteB:getTag())
-        if ((spriteA:getTag() == HERO_BULLET) and (spriteB:getTag() == ENEMY))
-                or
-                ((spriteA:getTag() == ENEMY) and (spriteB:getTag() == HERO_BULLET)) then
-            cclog("hit the mark!!")
-
-
+        if ((spriteA:getTag() == HERO_BULLET) and (spriteB:getTag() == ENEMY)) then
+            spriteA:removeFromParent(true)
+            spriteB:tankBoom()
+        elseif ((spriteA:getTag() == ENEMY) and (spriteB:getTag() == HERO_BULLET)) then
+            spriteA:tankBoom()
+            spriteB:removeFromParent(true)
         end
     end
 

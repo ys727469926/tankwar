@@ -33,24 +33,38 @@ function Tank:ctor(bitmask)
     self.fireCalmDown = false
     self.categoryBitmask = bitmask
 
-    --渲染移动动画
+    --渲染动画
     local spriteFrame = cc.SpriteFrameCache:getInstance()
     spriteFrame:addSpriteFrames("tank.plist")
     self:setSpriteFrame("tank_stay_1.png")
 
-    local animation = cc.Animation:create()
+    --渲染移动动画
+    local animationMove = cc.Animation:create()
     for i = 1, 2 do
         local frameName = string.format("tank_move_%d.png", i)
         --cclog("frameName = %s", frameName)
         local tankFrame = spriteFrame:getSpriteFrame(frameName)
-        animation:addSpriteFrame(tankFrame)
+        animationMove:addSpriteFrame(tankFrame)
     end
 
-    animation:setDelayPerUnit(0.15)
-    animation:setRestoreOriginalFrame(true)
-    local action = cc.Animate:create(animation)
-    action:retain()
-    self.moveAnimation = action
+    animationMove:setDelayPerUnit(0.15)
+    animationMove:setRestoreOriginalFrame(true)
+    local actionMove = cc.Animate:create(animationMove)
+    actionMove:retain()
+    self.moveAnimation = actionMove
+
+    --渲染销毁动画
+    local animationBoom = cc.Animation:create()
+    for i = 6, 10 do
+        local frameName = string.format("tank_boom_%d.png", i)
+        local boomFrame = spriteFrame:getSpriteFrame(frameName)
+        animationBoom:addSpriteFrame(boomFrame)
+    end
+
+    animationBoom:setDelayPerUnit(0.1)
+    local actionBoom = cc.Animate:create(animationBoom)
+    actionBoom:retain()
+    self.boomAnimation = actionBoom
 
     --添加物理刚体
     local physicsBody = cc.PhysicsBody:createBox(self:getContentSize())
@@ -62,6 +76,16 @@ function Tank:ctor(bitmask)
         physicsBody:setContactTestBitmask(ENEMY_CONTACT)
     end
     self:addComponent(physicsBody)
+
+    --退出时释放动画
+
+    local function onNodeEvent(tag)
+        if tag == "exit" then
+            self:onExit()
+        end
+    end
+
+    self:registerScriptHandler(onNodeEvent)
 
 end
 
@@ -153,31 +177,26 @@ function Tank:tankFire()
     end
     return false
 end
---local function tankStopRun(sprite)
---    sprite:stopAllActions()
---end
 
---坦克移动动画
---function Tank:startMoveAction()
---    --保存重复动画？
---    local spriteFrame = cc.SpriteFrameCache:getInstance()
---    spriteFrame:addSpriteFrames("tank.plist")
---
---    local animation = cc.Animation:create()
---    for i = 1, 2 do
---        local frameName = string.format("tank_move_%d.png", i)
---        --cclog("frameName = %s", frameName)
---        local tankFrame = spriteFrame:getSpriteFrame(frameName)
---        animation:addSpriteFrame(tankFrame)
---    end
---
---    animation:setDelayPerUnit(0.15)
---    animation:setRestoreOriginalFrame(true)
---    local action = cc.Animate:create(animation)
---    return action
---    --self:runAction(cc.RepeatForever:create(action))
---end
+
+--坦克爆炸销毁
+function Tank:tankBoom()
+    self:runAction(cc.Repeat:create(self.boomAnimation:clone(), 1))
+    local function delete()
+        self:removeFromParent(true)
+        --cclog("already calm down")
+    end
+    performWithDelay(self:getParent(), delete, 0.5)
+    --self:removeFromParent(true)
+end
+
+
 
 --退出时释放动画
+function Tank:onExit()
+    --cclog("release")
+    self.moveAnimation:release()
+    self.boomAnimation:release()
+end
 
 return Tank
