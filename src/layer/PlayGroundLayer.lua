@@ -3,6 +3,14 @@
 --- Created by yangsen.
 --- DateTime: 2018/8/8 11:41
 ---
+
+local HERO = 0x01          --0001
+local HERO_BULLET = 0x02   --0010
+local ENEMY = 0x04         --0100
+local ENEMY_BULLET = 0x08  --1000
+
+
+
 local common = require("common")
 local Tank = require("sprite.Tank")
 local size = cc.Director:getInstance():getWinSize()
@@ -14,10 +22,9 @@ end)
 function playGroundLayer:ctor()
     cclog("play ground layer init sprite")
 
-    local tank = Tank:create("tank_stay_1.png")
-    tank:setTag(1)
+    local tank = Tank:create(HERO)
     tank:setPosition(cc.p(size.width / 2, size.height / 2))
-    self:addChild(tank, 0, 1)
+    self:addChild(tank, 0, HERO)
 
     local edgeNode = cc.Node:create()
     edgeNode:setPosition(size.width / 2, size.height / 2)
@@ -44,18 +51,21 @@ function playGroundLayer:ctor()
     for i = 1, 5 do
 
         local sprite = cc.Sprite:createWithSpriteFrameName("tank_enemy_2.png")
-        sprite:setTag(3)
         local physicsBody = cc.PhysicsBody:createBox(sprite:getContentSize())
+
+        physicsBody:setCategoryBitmask(ENEMY)
+        physicsBody:setContactTestBitmask(3)
+        physicsBody:setDynamic(false)
         physicsBody:setGravityEnable(false)
-        physicsBody:setVelocity(cc.p(common.getRandNum(-1000, 1000), common.getRandNum(-1000, 1000)))
-        physicsBody:setTag(0x80)
+        --physicsBody:setVelocity(cc.p(common.getRandNum(-1000, 1000), common.getRandNum(-1000, 1000)))
+        --physicsBody:setEnabled(false)
         sprite:setPosition(cc.p(
                 common.getRandNum(30 + (size.width - size.height) / 2, size.width - 30 - (size.width - size.height) / 2),
                 common.getRandNum(30, size.height - 30)
         ))
         sprite:addComponent(physicsBody)
 
-        self:addChild(sprite)
+        self:addChild(sprite, 0, ENEMY)
     end
 
 end
@@ -94,9 +104,9 @@ function playGroundLayer:onEnter()
         local spriteA = contact:getShapeA():getBody():getNode()
         local spriteB = contact:getShapeB():getBody():getNode()
         print(spriteA:getTag() .. '    ' .. spriteB:getTag())
-        if ((spriteA:getTag() == 2) and (spriteB:getTag() == 1))
+        if ((spriteA:getTag() == HERO_BULLET) and (spriteB:getTag() == ENEMY))
                 or
-                ((spriteA:getTag() == 1) and (spriteB:getTag() == 2)) then
+                ((spriteA:getTag() == ENEMY) and (spriteB:getTag() == HERO_BULLET)) then
             cclog("hit the mark!!")
 
 

@@ -38,8 +38,10 @@ function Bullet:ctor(direction, positionX, positionY, isHero)
     local physicsBody = cc.PhysicsBody:createBox(self:getContentSize())
     physicsBody:setDynamic(false)
 
-    physicsBody:setCategoryBitmask(0x02)
-    physicsBody:setContactTestBitmask(0x01)
+
+    --待添加 根据坦克开火判断英雄敌人子弹，添加掩码
+    physicsBody:setCategoryBitmask(2)
+    physicsBody:setContactTestBitmask(4)
     self:addComponent(physicsBody)
 end
 

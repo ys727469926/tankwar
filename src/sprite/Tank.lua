@@ -4,33 +4,39 @@
 --- DateTime: 2018/8/8 18:46
 ---
 
+--CategoryBitmask
+local HERO = 1                  --0001
+local HERO_BULLET = 2           --0010
+local ENEMY = 4                 --0100
+local ENEMY_BULLET = 8          --1000
+
+--ContactBitmask
+local HERO_CONTACT = 12         --1100
+local HERO_BULLET_CONTACT = 4   --0100
+local ENEMY_CONTACT = 3         --0011
+local ENEMY_BULLET_CONTACT = 1  --0001
 
 local common = require("common")
 local Bullet = require("sprite.Bullet")
 local size = cc.Director:getInstance():getWinSize()
 
-
-local Tank = class("Tank", function(tankName)
+local Tank = class("Tank", function(bitmask)
     return cc.Sprite:create()
 end)
 
-function Tank:create(tankName)
-    local sprite = Tank.new(tankName)
-    return sprite
-end
-
-function Tank:ctor(tankName)
+function Tank:ctor(bitmask)
     cclog("tank init")
     --标记当前方向 1-up 2-right 3-down 4-left
     self.direction = 1
     self.isMoving = false
     self.currentMoveAction = nil
     self.fireCalmDown = false
+    self.categoryBitmask = bitmask
 
     --渲染移动动画
     local spriteFrame = cc.SpriteFrameCache:getInstance()
     spriteFrame:addSpriteFrames("tank.plist")
-    self:setSpriteFrame(tankName)
+    self:setSpriteFrame("tank_stay_1.png")
 
     local animation = cc.Animation:create()
     for i = 1, 2 do
@@ -49,8 +55,12 @@ function Tank:ctor(tankName)
     --添加物理刚体
     local physicsBody = cc.PhysicsBody:createBox(self:getContentSize())
     physicsBody:setDynamic(false)
-    physicsBody:setCategoryBitmask(0x01)
-    physicsBody:setContactTestBitmask(0x02)
+    physicsBody:setCategoryBitmask(self.categoryBitmask)
+    if self.categoryBitmask == HERO then
+        physicsBody:setContactTestBitmask(HERO_CONTACT)
+    else
+        physicsBody:setContactTestBitmask(ENEMY_CONTACT)
+    end
     self:addComponent(physicsBody)
 
 end
@@ -128,12 +138,13 @@ end
 
 --坦克开火
 function Tank:tankFire()
-    if self.fireCalmDown == false then
 
+    --待添加坦克判断，敌人子弹，英雄子弹
+
+    if self.fireCalmDown == false then
         local tankX, tankY = self:getPosition()
         local bullet = Bullet:create(self.direction, tankX, tankY, true)
-        bullet:setTag(2)
-        self:getParent():addChild(bullet, 1)
+        self:getParent():addChild(bullet, 1, HERO_BULLET)
         bullet:fly()
         self.fireCalmDown = true
         return true
