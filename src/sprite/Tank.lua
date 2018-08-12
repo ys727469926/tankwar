@@ -20,40 +20,22 @@ local common = require("common")
 local Bullet = require("sprite.Bullet")
 local size = cc.Director:getInstance():getWinSize()
 
-local Tank = class("Tank", function(bitmask)
+local Tank = class("Tank", function()
     return cc.Sprite:create()
 end)
 
-function Tank:ctor(bitmask)
+function Tank:ctor()
     cclog("tank init")
     --标记当前方向 1-up 2-right 3-down 4-left
     self.direction = 1
     self.isMoving = false
     self.currentMoveAction = nil
     self.fireCalmDown = false
-    self.categoryBitmask = bitmask
 
-    --渲染动画
+
+    --渲染销毁动画渲染动画
     local spriteFrame = cc.SpriteFrameCache:getInstance()
-    spriteFrame:addSpriteFrames("tank.plist")
-    self:setSpriteFrame("tank_stay_1.png")
-
-    --渲染移动动画
-    local animationMove = cc.Animation:create()
-    for i = 1, 2 do
-        local frameName = string.format("tank_move_%d.png", i)
-        --cclog("frameName = %s", frameName)
-        local tankFrame = spriteFrame:getSpriteFrame(frameName)
-        animationMove:addSpriteFrame(tankFrame)
-    end
-
-    animationMove:setDelayPerUnit(0.15)
-    animationMove:setRestoreOriginalFrame(true)
-    local actionMove = cc.Animate:create(animationMove)
-    actionMove:retain()
-    self.moveAnimation = actionMove
-
-    --渲染销毁动画
+    spriteFrame:addSpriteFrames("qing_tank.plist")
     local animationBoom = cc.Animation:create()
     for i = 6, 10 do
         local frameName = string.format("tank_boom_%d.png", i)
@@ -66,26 +48,17 @@ function Tank:ctor(bitmask)
     actionBoom:retain()
     self.boomAnimation = actionBoom
 
-    --添加物理刚体
+
+end
+
+--渲染物理刚体
+function Tank:renderPhysicsBody(categoryBitmask, contactTestBitmask)
+
     local physicsBody = cc.PhysicsBody:createBox(self:getContentSize())
     physicsBody:setDynamic(false)
-    physicsBody:setCategoryBitmask(self.categoryBitmask)
-    if self.categoryBitmask == HERO then
-        physicsBody:setContactTestBitmask(HERO_CONTACT)
-    else
-        physicsBody:setContactTestBitmask(ENEMY_CONTACT)
-    end
+    physicsBody:setCategoryBitmask(categoryBitmask)
+    physicsBody:setContactTestBitmask(contactTestBitmask)
     self:addComponent(physicsBody)
-
-    --退出时释放动画
-
-    local function onNodeEvent(tag)
-        if tag == "exit" then
-            self:onExit()
-        end
-    end
-
-    self:registerScriptHandler(onNodeEvent)
 
 end
 
@@ -160,7 +133,7 @@ end
 
 
 
---坦克开火
+--坦克开火 -- 放到具体英雄 里 添加子弹掩码
 function Tank:tankFire()
 
     --待添加坦克判断，敌人子弹，英雄子弹
@@ -184,19 +157,37 @@ function Tank:tankBoom()
     self:runAction(cc.Repeat:create(self.boomAnimation:clone(), 1))
     local function delete()
         self:removeFromParent(true)
-        --cclog("already calm down")
     end
     performWithDelay(self:getParent(), delete, 0.5)
-    --self:removeFromParent(true)
 end
 
 
 
 --退出时释放动画
 function Tank:onExit()
-    --cclog("release")
+    cclog("release")
     self.moveAnimation:release()
-    self.boomAnimation:release()
+    --self.boomAnimation:release()
+end
+
+function Tank:renderMoveAnimation(categoryBitmask)
+
+    local spriteFrame = cc.SpriteFrameCache:getInstance()
+    spriteFrame:addSpriteFrames("qing_tank.plist")
+
+    local animationMove = cc.Animation:create()
+    for i = 1, 2 do
+        local frameName = string.format("tank_%d_move_%d.png", categoryBitmask, i)
+        --cclog("frameName = %s", frameName)
+        local tankFrame = spriteFrame:getSpriteFrame(frameName)
+        animationMove:addSpriteFrame(tankFrame)
+    end
+
+    animationMove:setDelayPerUnit(0.15)
+    animationMove:setRestoreOriginalFrame(true)
+    local actionMove = cc.Animate:create(animationMove)
+    actionMove:retain()
+    self.moveAnimation = actionMove
 end
 
 return Tank

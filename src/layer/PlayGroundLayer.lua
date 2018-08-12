@@ -13,6 +13,8 @@ local ENEMY_BULLET = 0x08  --1000
 
 local common = require("common")
 local Tank = require("sprite.Tank")
+local HeroTank = require("sprite.HeroTank")
+local EnemyTank = require("sprite.EnemyTank")
 local size = cc.Director:getInstance():getWinSize()
 
 local playGroundLayer = class("playGroundLayer", function()
@@ -22,9 +24,9 @@ end)
 function playGroundLayer:ctor()
     cclog("play ground layer init sprite")
 
-    local tank = Tank:create(HERO)
-    tank:setPosition(cc.p(size.width / 2, size.height / 2))
-    self:addChild(tank, 0, HERO)
+    local heroTank = HeroTank:create()
+    heroTank:setPosition(cc.p(size.width / 2, size.height / 2))
+    self:addChild(heroTank, 0, HERO)
 
     local edgeNode = cc.Node:create()
     edgeNode:setPosition(size.width / 2, size.height / 2)
@@ -36,7 +38,6 @@ function playGroundLayer:ctor()
 
     local function onNodeEvent(tag)
         if tag == "enter" then
-            cclog("in enter")
             self:onEnter()
         end
     end
@@ -45,9 +46,9 @@ function playGroundLayer:ctor()
 
 
     --生成5个坦克测试碰撞，后期删除
-    cclog("test physic")
+    --cclog("test physic")
     for i = 1, 5 do
-        local enemy = Tank:create(ENEMY)
+        local enemy = EnemyTank:create()
         enemy:setPosition(cc.p(
                 common.getRandNum(30 + (size.width - size.height) / 2, size.width - 30 - (size.width - size.height) / 2),
                 common.getRandNum(30, size.height - 30)
@@ -61,6 +62,7 @@ function playGroundLayer:operateByTag(tag)
     if tag ~= 5 then
         self:getChildByTag(HERO):tankMove(tag)
     else
+        --cclog("test fire")
         if self:getChildByTag(HERO):tankFire() then
             local function fireCalmDown()
                 self:getChildByTag(HERO):setFireCalmDown()
@@ -83,8 +85,7 @@ function playGroundLayer:getHeroDirection()
 end
 
 function playGroundLayer:onEnter()
-    --初始化物理引擎
-    cclog('init contact')
+    --初始化碰撞检测
 
     local function onContactBegin(contact)
         cclog("in contact")

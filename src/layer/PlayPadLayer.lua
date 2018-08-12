@@ -140,7 +140,6 @@ end
 
 
 function PlayPadLayer:ctor()
-    cclog("pad layer ctor")
     self.isMovePadUsing = false
     self.isInMovePad = false
 
@@ -151,7 +150,6 @@ function PlayPadLayer:ctor()
         end
     end
     self:registerScriptHandler(onNodeEvent)
-    cclog('5')
 end
 
 return PlayPadLayer
