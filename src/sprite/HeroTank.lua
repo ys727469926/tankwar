@@ -23,10 +23,10 @@ local HeroTank = class("HeroTank", Tank)
 
 function HeroTank:ctor()
 
-    HeroTank.super:ctor()
+    self.super:ctor()
     --添加精灵图片
     local spriteFrame = cc.SpriteFrameCache:getInstance()
-    spriteFrame:addSpriteFrames("tank.plist")
+    spriteFrame:addSpriteFrames("qing_tank.plist")
     self:setSpriteFrame("tank_hero_1.png")
 
     local function onNodeEvent(tag)
@@ -45,6 +45,7 @@ function HeroTank:onEnter()
     self:renderMoveAnimation(HERO)
     --添加物理刚体
     self:renderPhysicsBody(HERO, HERO_CONTACT)
+    self:renderBoomAnimation()
 end
 
 return HeroTank

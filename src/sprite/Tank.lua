@@ -25,29 +25,13 @@ local Tank = class("Tank", function()
 end)
 
 function Tank:ctor()
-    cclog("tank init")
+    --cclog("tank init")
     --标记当前方向 1-up 2-right 3-down 4-left
     self.direction = 1
     self.isMoving = false
     self.currentMoveAction = nil
     self.fireCalmDown = false
-
-
-    --渲染销毁动画渲染动画
-    local spriteFrame = cc.SpriteFrameCache:getInstance()
-    spriteFrame:addSpriteFrames("qing_tank.plist")
-    local animationBoom = cc.Animation:create()
-    for i = 6, 10 do
-        local frameName = string.format("tank_boom_%d.png", i)
-        local boomFrame = spriteFrame:getSpriteFrame(frameName)
-        animationBoom:addSpriteFrame(boomFrame)
-    end
-
-    animationBoom:setDelayPerUnit(0.1)
-    local actionBoom = cc.Animate:create(animationBoom)
-    actionBoom:retain()
-    self.boomAnimation = actionBoom
-
+    self.movingTime = 0
 
 end
 
@@ -79,7 +63,6 @@ end
 --坦克移动函数
 function Tank:tankMove(tag)
     local tankX, tankY = self:getPosition()
-
     local tankMoveToCurrentDirection = function(direction)
         local time, destination = common.initMoveTo(
                 direction,
@@ -89,11 +72,11 @@ function Tank:tankMove(tag)
                 self:getContentSize().width / 2)
         self.currentMoveAction = cc.MoveTo:create(time, destination)
 
-        --self:startMoveAction
-
         self:runAction(cc.RepeatForever:create(self.moveAnimation:clone()))
         self:runAction(self.currentMoveAction)
         self.isMoving = true
+        self.movingTime = time
+
     end
 
     local tankTurnToCurrentDirection = function(direction)
@@ -154,6 +137,7 @@ end
 
 --坦克爆炸销毁
 function Tank:tankBoom()
+    self:stopAllActions()
     self:runAction(cc.Repeat:create(self.boomAnimation:clone(), 1))
     local function delete()
         self:removeFromParent(true)
@@ -161,13 +145,11 @@ function Tank:tankBoom()
     performWithDelay(self:getParent(), delete, 0.5)
 end
 
-
-
 --退出时释放动画
 function Tank:onExit()
-    cclog("release")
+    --cclog("release")
     self.moveAnimation:release()
-    --self.boomAnimation:release()
+    self.boomAnimation:release()
 end
 
 function Tank:renderMoveAnimation(categoryBitmask)
@@ -188,6 +170,23 @@ function Tank:renderMoveAnimation(categoryBitmask)
     local actionMove = cc.Animate:create(animationMove)
     actionMove:retain()
     self.moveAnimation = actionMove
+end
+
+function Tank:renderBoomAnimation()
+    --渲染销毁动画渲染动画
+    local spriteFrame = cc.SpriteFrameCache:getInstance()
+    spriteFrame:addSpriteFrames("qing_tank.plist")
+    local animationBoom = cc.Animation:create()
+    for i = 6, 10 do
+        local frameName = string.format("tank_boom_%d.png", i)
+        local boomFrame = spriteFrame:getSpriteFrame(frameName)
+        animationBoom:addSpriteFrame(boomFrame)
+    end
+
+    animationBoom:setDelayPerUnit(0.1)
+    local actionBoom = cc.Animate:create(animationBoom)
+    actionBoom:retain()
+    self.boomAnimation = actionBoom
 end
 
 return Tank

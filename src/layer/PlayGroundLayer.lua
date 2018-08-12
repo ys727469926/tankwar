@@ -9,6 +9,8 @@ local HERO_BULLET = 0x02   --0010
 local ENEMY = 0x04         --0100
 local ENEMY_BULLET = 0x08  --1000
 
+local SCORE_LABEL = 100
+
 
 
 local common = require("common")
@@ -23,10 +25,16 @@ end)
 
 function playGroundLayer:ctor()
     cclog("play ground layer init sprite")
+    self.score = 0
 
     local heroTank = HeroTank:create()
     heroTank:setPosition(cc.p(size.width / 2, size.height / 2))
     self:addChild(heroTank, 0, HERO)
+
+    local scoreLabel = cc.Label:createWithSystemFont("SCORE: 0", "Arial", 56)
+    scoreLabel:setAnchorPoint(0, 1)
+    scoreLabel:setPosition(cc.p(30, size.height - 30))
+    self:addChild(scoreLabel, 0, SCORE_LABEL)
 
     local edgeNode = cc.Node:create()
     edgeNode:setPosition(size.width / 2, size.height / 2)
@@ -36,25 +44,34 @@ function playGroundLayer:ctor()
             ))
     self:addChild(edgeNode)
 
+    local putNewEnemy = function()
+        local random = common.getRandNum(1, 3)
+        for i = 1, random do
+            local enemy = EnemyTank:create()
+            enemy:setPosition(cc.p(
+                    common.getRandNum(30 + (size.width - size.height) / 2, size.width - 30 - (size.width - size.height) / 2),
+                    common.getRandNum(30, size.height - 30)
+            ))
+            self:addChild(enemy, 0, ENEMY)
+            --enemy:randomMove()
+        end
+    end
+    local Timer = cc.Director:getInstance():getScheduler():scheduleScriptFunc(putNewEnemy, 4, false)
+
+    --layer:scheduleOnce(schedule_selsector(missionScene:toPlayScene()),5.0)
+
+
+
     local function onNodeEvent(tag)
         if tag == "enter" then
             self:onEnter()
+        elseif tag == "exit" then
+            cc.Director:getInstance():getScheduler():unscheduleScriptEntry(Timer)
         end
     end
 
     self:registerScriptHandler(onNodeEvent)
 
-
-    --生成5个坦克测试碰撞，后期删除
-    --cclog("test physic")
-    for i = 1, 5 do
-        local enemy = EnemyTank:create()
-        enemy:setPosition(cc.p(
-                common.getRandNum(30 + (size.width - size.height) / 2, size.width - 30 - (size.width - size.height) / 2),
-                common.getRandNum(30, size.height - 30)
-        ))
-        self:addChild(enemy, 0, ENEMY)
-    end
 
 end
 
@@ -85,19 +102,27 @@ function playGroundLayer:getHeroDirection()
 end
 
 function playGroundLayer:onEnter()
-    --初始化碰撞检测
 
+    --设置分数
+    local function setScore()
+        self.score = self.score + 100
+        self:getChildByTag(SCORE_LABEL):setString(string.format("SCORE: %d", self.score))
+    end
+
+    --初始化碰撞检测
     local function onContactBegin(contact)
-        cclog("in contact")
+        --cclog("in contact")
         local spriteA = contact:getShapeA():getBody():getNode()
         local spriteB = contact:getShapeB():getBody():getNode()
-        print(spriteA:getTag() .. '    ' .. spriteB:getTag())
+        --print(spriteA:getTag() .. '    ' .. spriteB:getTag())
         if ((spriteA:getTag() == HERO_BULLET) and (spriteB:getTag() == ENEMY)) then
             spriteA:removeFromParent(true)
             spriteB:tankBoom()
+            setScore()
         elseif ((spriteA:getTag() == ENEMY) and (spriteB:getTag() == HERO_BULLET)) then
             spriteA:tankBoom()
             spriteB:removeFromParent(true)
+            setScore()
         end
     end
 

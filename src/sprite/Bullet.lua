@@ -49,7 +49,7 @@ function Bullet:fly()
 
     local time, destination = common.initMoveTo(
             self.direction,
-            0.0025,
+            0.0019,
             self.positionX,
             self.positionY,
             0)

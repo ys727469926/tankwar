@@ -17,21 +17,24 @@ local HERO_BULLET_CONTACT = 4   --0100
 local ENEMY_CONTACT = 3         --0011
 local ENEMY_BULLET_CONTACT = 1  --0001
 
+local common = require("common")
 local Tank = require("sprite.Tank")
 
 local EnemyTank = class("EnemyTank", Tank)
 
 function EnemyTank:ctor()
 
-    EnemyTank.super:ctor()
+    self.super:ctor()
     --添加精灵图片
     local spriteFrame = cc.SpriteFrameCache:getInstance()
-    spriteFrame:addSpriteFrames("tank.plist")
+    spriteFrame:addSpriteFrames("qing_tank.plist")
     self:setSpriteFrame("tank_enemy_1.png")
 
     local function onNodeEvent(tag)
         if tag == "enter" then
             self:onEnter()
+        elseif tag == "enterTransitionFinish" then
+            self:onEnterTransitionFinish()
         elseif tag == "exit" then
             self:onExit()
         end
@@ -45,6 +48,27 @@ function EnemyTank:onEnter()
     self:renderMoveAnimation(ENEMY)
     --添加物理刚体
     self:renderPhysicsBody(ENEMY, ENEMY_CONTACT)
+    self:renderBoomAnimation()
+end
+
+function EnemyTank:onEnterTransitionFinish()
+    self:randomMove()
+end
+
+function EnemyTank:randomMove()
+    self:tankStopMove()
+    local direction = common.getRandNum(1, 4)
+    --print("direstion  "..direction)
+    self:tankMove(direction)
+    --print("test  "..self.movingTime)
+    local nextMoveTime = common.getRandNum(0, math.ceil(self.movingTime)) + math.random()
+    --print("nextMoveTime   "..nextMoveTime)
+    local function nextMove()
+        self:randomMove()
+        --cclog("already calm down")
+    end
+
+    performWithDelay(self:getParent(), nextMove, nextMoveTime)
 end
 
 return EnemyTank
